@@ -1,0 +1,66 @@
+<body>
+    <app-navigation></app-navigation>
+    <!-- Sign up form -->
+    <section class="signup py-5">
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+                <!-- Form đăng ký -->
+                <div class="col-lg-6 col-md-8">
+                    <div class="card shadow p-4">
+                        <h2 class="form-title text-center">Sign up</h2>
+                        <form method="POST" class="register-form">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Your Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" class="form-control" id="name" placeholder="Your Name" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Your Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    <input type="email" class="form-control" id="email" placeholder="Your Email"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="pass" class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" class="form-control" id="pass" placeholder="Password"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="re_pass" class="form-label">Repeat Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" class="form-control" id="re_pass"
+                                        placeholder="Repeat Password" required>
+                                </div>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="agree-term">
+                                <label class="form-check-label" for="agree-term">I agree to the <a href="#">Terms of
+                                        service</a></label>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Register</button>
+                            </div>
+                        </form>
+                        <div class="text-center mt-3">
+                            <a href="#" class="text-primary">I am already a member</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Hình ảnh -->
+                <div class="col-lg-4 d-none d-lg-block">
+                    <img src="images/signup-image.jpg" class="img-fluid rounded" alt="Sign up image">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+</body>

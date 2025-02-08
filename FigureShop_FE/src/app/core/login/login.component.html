@@ -1,0 +1,60 @@
+<body>
+    <app-navigation></app-navigation>
+    <!-- Sign In Form -->
+    <section class="sign-in py-5">
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+                <!-- Hình ảnh -->
+                <div class="col-lg-4 d-none d-lg-block">
+                    <img src="images/signin-image.jpg" class="img-fluid rounded" alt="Sign in image">
+                    <div class="text-center mt-3">
+                        <a href="#" class="text-primary">Create an account</a>
+                    </div>
+                </div>
+
+                <!-- Form đăng nhập -->
+                <div class="col-lg-5 col-md-8">
+                    <div class="card shadow p-4">
+                        <h2 class="form-title text-center">Sign in</h2>
+                        <form method="POST" class="login-form">
+                            <div class="mb-3">
+                                <label for="your_name" class="form-label">Your Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" class="form-control" id="your_name" placeholder="Your Name"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="your_pass" class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" class="form-control" id="your_pass" placeholder="Password"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="remember-me">
+                                <label class="form-check-label" for="remember-me">Remember me</label>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Log in</button>
+                            </div>
+                        </form>
+
+                        <!-- Social Login -->
+                        <div class="text-center mt-4">
+                            <span class="social-label">Or login with</span>
+                            <div class="d-flex justify-content-center gap-3 mt-2">
+                                <a href="#" class="btn btn-outline-primary"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" class="btn btn-outline-info"><i class="fab fa-twitter"></i></a>
+                                <a href="#" class="btn btn-outline-danger"><i class="fab fa-google"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <app-footer></app-footer>
+</body>
