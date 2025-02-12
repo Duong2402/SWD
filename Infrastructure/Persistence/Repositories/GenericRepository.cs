@@ -3,18 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T>(DbContext context) : IGenericRepository<T> where T : class
     {
-        private readonly DbContext _context;
-        private readonly DbSet<T> _dbSet;
+        private readonly DbContext _context = context;
+        private readonly DbSet<T> _dbSet = context.Set<T>();
 
-        public GenericRepository(DbContext context)
-        {
-            _context = context;
-            _dbSet = context.Set<T>();
-        }
-
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T?> GetByIdAsync(Guid id)
         {
             return await _dbSet.FindAsync(id);
         }
@@ -22,6 +16,17 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
+        }
+
+        public async Task<(IEnumerable<T> Items, int TotalCount)> GetPagedAsync(int page, int size)
+        {
+            var totalCount = await _context.Set<T>().CountAsync();
+            var items = await _context.Set<T>()
+                .Skip((page - 1) * size)
+                .Take(size)
+                .ToListAsync();
+
+            return (items, totalCount);
         }
 
         public async Task AddAsync(T entity)
@@ -35,7 +40,7 @@ namespace Infrastructure.Persistence.Repositories
             await Task.CompletedTask;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var entity = await _dbSet.FindAsync(id);
             if (entity != null)

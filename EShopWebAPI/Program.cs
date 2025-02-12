@@ -3,6 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Interfaces;
 using Infrastructure.Persistence;
 using Domain.Entities;
+using Application.Common.Mappings;
+using Infrastructure.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Infrastructure.Configurations;
+using Domain.Common.Roles;
+using Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,12 +21,30 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Persistence classes
 builder.Services.AddDbContext<ApplicationDbContext>();
-
 builder.Services.AddScoped<DbContext, ApplicationDbContext>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Configuration manager
 builder.Services.AddScoped<Domain.Interfaces.IConfigurationManager, Infrastructure.Configurations.ConfigurationManager>();
-builder.Services.AddScoped<UserManager<User>, UserManager<User>>();
+
+// Service classes
+builder.Services.AddScoped<UserServices>();
+builder.Services.AddScoped<FigureServices>();
+
+// AutoMapper service
+// Quet project, tim tat ca file MappingProfile roi gop lai thanh 1
+// Mapping profile co san trong /Application/Common/Mappings/
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+// Helper services
+builder.Services.AddScoped<JwtHelper>();
+
+
+// EF Identity configurations
+builder.Services.AddScoped<UserManager<User>>();
+builder.Services.AddScoped<RoleManager<IdentityRole<Guid>>>();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -41,11 +67,57 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = false;
 });
 
-builder.Services.AddIdentity<User, IdentityRole>()
+builder.Services.AddIdentity<User, IdentityRole<Guid>>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
+// JWT configurations
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]))
+        };
+    });
+
+builder.Services.Configure<AuthTokenOptions>(
+    builder.Configuration.GetSection("AuthTokenOptions")
+);
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    // Update database to use the lastest migrations, ignored if database is up to date
+    var db = services.GetRequiredService<ApplicationDbContext>();
+
+    var pendingMigrations = db.Database.GetPendingMigrations().ToList();
+    if (pendingMigrations.Count != 0)
+    {
+        db.Database.Migrate();
+    }
+
+    // Add the roles
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+    if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
+    {
+        await roleManager.CreateAsync(new IdentityRole<Guid>(UserRoles.Admin));
+    }
+
+    if (!await roleManager.RoleExistsAsync(UserRoles.Customer))
+    {
+        await roleManager.CreateAsync(new IdentityRole<Guid>(UserRoles.Customer));
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
