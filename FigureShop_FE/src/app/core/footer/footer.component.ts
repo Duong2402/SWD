@@ -8,5 +8,11 @@ import { Component } from '@angular/core';
   styleUrl: './footer.component.css'
 })
 export class FooterComponent {
-
+  scrollTop() {
+    const container = document.querySelector('.container-fluid'); // Lấy phần tử cha
+    if (container) {
+      console.log("get Top");
+      container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
 }
