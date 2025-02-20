@@ -1,4 +1,5 @@
 ﻿using Application.DTO;
+using Application.DTO.BaseDTO;
 using AutoMapper;
 using Domain.Entities;
 
@@ -14,7 +15,6 @@ namespace Application.Common.Mappings
         public MappingProfile()
         {
             CreateMap<User, UserProfileDto>().ReverseMap();
-            CreateMap<Product, FigureDto>().ReverseMap();
         }
     }
 }

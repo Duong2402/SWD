@@ -1,0 +1,91 @@
+<!-- Topbar + Navbar Combined Start -->
+<div class="container-fluid bg-dark py-3 px-xl-5 navbar-container" [ngClass]="{ 'hidden-navbar': !isNavbarVisible }">
+    <div class="row align-items-center ">
+        <!-- Logo -->
+        <div class="col-lg-2 col-md-3 text-left">
+            <a href="" class="text-decoration-none">
+                <span class="h3 text-uppercase text-primary bg-dark px-2">Multi</span>
+                <span class="h3 text-uppercase text-dark bg-primary px-2 ml-n1">Shop</span>
+            </a>
+        </div>
+        <!-- Navigation -->
+        <div class="col-lg-5 col-md-6">
+            <nav class="navbar navbar-expand-lg navbar-light p-0">
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a href="index.html" class="nav-link active text-light">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a [routerLink]="['/shop']" class="nav-link text-light">Shop</a>
+
+                        </li>
+                        <li class="nav-item">
+                        </li>
+                        <li class="nav-item dropdown">
+                            <div class="dropdown-menu">
+                                <a [routerLink]="['/cart']" class="dropdown-item">Shopping Cart</a>
+                                <a href="checkout.html" class="dropdown-item">Checkout</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a href="contact.html" class="nav-link text-light">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <!-- Search Bar -->
+        <div class="col-lg-3 col-md-3">
+            <form action="">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for products">
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-transparent text-primary">
+                            <i class="fa fa-search text-light"></i>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Icons + Avatar -->
+        <div class="col-lg-2 col-md-12 text-right d-flex align-items-center justify-content-end">
+            <!-- Wishlist -->
+            <a href="" class="btn px-2 position-relative">
+                <i class="fas fa-heart text-primary"></i>
+                <span
+                    class="badge bg-secondary position-absolute top-0 start-100 translate-middle rounded-circle">0</span>
+            </a>
+            <!-- Cart -->
+            <a href="cart" class="btn px-2 position-relative">
+                <i class="fas fa-shopping-cart text-primary"></i>
+                <span
+                    class="badge bg-secondary position-absolute top-0 start-100 translate-middle rounded-circle">0</span>
+            </a>
+            <!-- Avatar + Dropdown -->
+            <div class="dropdown ms-3">
+                <a class="d-flex align-items-center text-light text-decoration-none dropdown-toggle" id="userDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://via.placeholder.com/40" alt="User Avatar"
+                        class="rounded-circle border border-light" width="40" height="40">
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                    <li><a class="dropdown-item" href="/change-password">Change Password</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item text-danger" href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+<!-- Topbar + Navbar Combined End -->

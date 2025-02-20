@@ -1,5 +1,6 @@
 ﻿using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Infrastructure.Persistence.Repositories
 {
@@ -48,5 +49,24 @@ namespace Infrastructure.Persistence.Repositories
                 _dbSet.Remove(entity);
             }
         }
+
+        public async Task<IEnumerable<T>> FilterAll(Expression<Func<T, bool>> predicate,
+                                                    string includeProperties = "")
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (!string.IsNullOrWhiteSpace(includeProperties))
+            {
+                foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+
+            query = query.Where(predicate);
+
+            return await query.ToListAsync();
+        }
+
     }
 }

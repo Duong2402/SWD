@@ -19,6 +19,25 @@ namespace EShopWebAPI.Controllers
             return new JsonResult(Ok(result));
         }
 
+        [HttpGet("filter")]
+        public async Task<IActionResult> FilterProduct(
+            [FromQuery] string? name,
+            [FromQuery] string? type,
+            [FromQuery] string? vendor,
+            [FromQuery] string? category,
+            [FromQuery] decimal? min,
+            [FromQuery] decimal? max,
+            [FromQuery] int page,
+            [FromQuery] int pageSize = 10)
+        {
+           var products = await _figureServices.Filter(name, type, vendor, category, min, max, page, pageSize);
+            if(products == null )
+            {
+                return new JsonResult(NotFound());
+            }
+            return new JsonResult(products);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetPaged(int page, int size = 10)
         {
@@ -41,7 +60,7 @@ namespace EShopWebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] FigureDto dto)
+        public async Task<IActionResult> Create([FromBody] FigureCreateDto dto)
         {
             try
             {
@@ -56,7 +75,7 @@ namespace EShopWebAPI.Controllers
         }
 
         [HttpPut("{postId}")]
-        public async Task<IActionResult> Update(Guid postId, [FromBody] FigureDto dto)
+        public async Task<IActionResult> Update(Guid postId, [FromBody] FigureCreateDto dto)
         {
             try
             {
@@ -85,5 +104,7 @@ namespace EShopWebAPI.Controllers
 
             return new JsonResult(NoContent());
         }
+
+       
     }
 }
