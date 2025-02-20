@@ -12,29 +12,29 @@ namespace Application.Services
     public class FigureServices(IUnitOfWork unitOfWork, IMapper mapper)
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IGenericRepository<Figure> _figureRepository = unitOfWork.GetRepository<Figure>();
+        private readonly IGenericRepository<Product> _figureRepository = unitOfWork.GetRepository<Product>();
         private readonly IMapper _mapper = mapper;
         private const string URLImage = "https://localhost:7241/images/";
 
-        public async Task<IEnumerable<Figure>> GetAllAsync()
+        public async Task<IEnumerable<Product>> GetAllAsync()
         {
             return await _figureRepository.GetAllAsync();
         }
 
-        public async Task<IPagedResult<Figure>> GetPagedAsync(int page, int size = 10)
+        public async Task<IPagedResult<Product>> GetPagedAsync(int page, int size = 10)
         {
             var (items, totalCount) = await _figureRepository.GetPagedAsync(page, size);
-            return new PagedResult<Figure>(items, totalCount, page, size);
+            return new PagedResult<Product>(items, totalCount, page, size);
         }
 
-        public async Task<Figure?> GetByIdAsync(Guid productId)
+        public async Task<Product?> GetByIdAsync(Guid productId)
         {
             return await _figureRepository.GetByIdAsync(productId);
         }
 
         public async Task<int> CreateFigureAsync(FigureCreateDto dto)
         {
-            var figure = _mapper.Map<Figure>(dto);
+            var figure = _mapper.Map<Product>(dto);
 
             await _figureRepository.AddAsync(figure);
 
