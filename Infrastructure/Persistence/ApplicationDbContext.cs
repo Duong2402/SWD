@@ -10,7 +10,7 @@ namespace Infrastructure.Persistence
     {
         private readonly IConfigurationManager _configurationManager = configurationManager;
 
-        public DbSet<Figure> Products { get; set; }
+        public DbSet<Product> Products { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

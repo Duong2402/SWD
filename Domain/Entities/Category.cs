@@ -1,11 +1,15 @@
-﻿namespace Domain.Entities
+using Domain.Common.BaseEntities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain.Entities
 {
-    public  class Category
+    public class Category : BaseAuditableEntity
     {
-        public int Id { get; set; }
         public string Name { get; set; }
-        public DateTime DateCreate { get; set; } = DateTime.Now;
-        public DateTime? DateUpdate { get; set; }
-        public bool IsDeleted { get; set; }
+        public string Description { get; set; }
     }
 }

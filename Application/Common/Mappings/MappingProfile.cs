@@ -15,9 +15,6 @@ namespace Application.Common.Mappings
         public MappingProfile()
         {
             CreateMap<User, UserProfileDto>().ReverseMap();
-            CreateMap<Figure, FigureCreateDto>().ReverseMap();
-            CreateMap<Figure, BaseProductDto>().ReverseMap();
-            CreateMap<Category, CategoryDto>().ReverseMap();
         }
     }
 }
