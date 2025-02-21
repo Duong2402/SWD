@@ -26,7 +26,6 @@ export class FigureService {
     if (max) params.append('max', max.toString());
     params.append('page', page.toString());
     params.append('pageSize', pageSize.toString());
-    console.log(params.toString());
     return this.http.get<PagedResult<BaseProductDto>>(`${this.api}/FilterProduct/filter?${params.toString()}`);
   }
 }

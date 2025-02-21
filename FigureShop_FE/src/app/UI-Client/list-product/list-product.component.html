@@ -107,7 +107,7 @@
                         <div class="product-item bg-light mb-4">
                             <div class="product-img position-relative overflow-hidden"
                                 style="width: 282px; height: 282px;">
-                                <img class="img-fluid w-100" [src]="item.imageUrl" alt="Error image">
+                                <img class="img-fluid w-100" [src]="item.imageUrl?.[0]?.url" alt="Error image">
                                 <div class="product-action">
                                     <a class="btn btn-outline-dark btn-square" href=""><i
                                             class="fa fa-shopping-cart"></i></a>
@@ -120,7 +120,7 @@
                             <div class="text-center py-4">
                                 <a class="h6 text-decoration-none text-truncate" href="shop/id">{{item.name}}</a>
                                 <div class="d-flex align-items-center justify-content-center mt-2">
-                                    <h5>${{item.price}}</h5>
+                                    <h5>{{formatCurrency(item.price)}}</h5>
                                     <h6 class="text-muted ml-2"><del>${{item.price}}</del></h6>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-center mb-1">
