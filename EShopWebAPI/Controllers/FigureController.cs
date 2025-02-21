@@ -22,15 +22,13 @@ namespace EShopWebAPI.Controllers
         [HttpGet("filter")]
         public async Task<IActionResult> FilterProduct(
             [FromQuery] string? name,
-            [FromQuery] string? type,
-            [FromQuery] string? vendor,
             [FromQuery] string? category,
-            [FromQuery] decimal? min,
-            [FromQuery] decimal? max,
+            [FromQuery] double? min,
+            [FromQuery] double? max,
             [FromQuery] int page,
             [FromQuery] int pageSize = 10)
         {
-           var products = await _figureServices.Filter(name, type, vendor, category, min, max, page, pageSize);
+           var products = await _figureServices.Filter(name,category, min, max, page, pageSize);
             if(products == null )
             {
                 return new JsonResult(NotFound());

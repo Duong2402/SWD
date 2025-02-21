@@ -4,11 +4,9 @@ namespace Application.DTO.BaseDTO
 {
     public class BaseProductDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
-        public string? ImageUrl { get; set; }
-        public string? Vendors { get; set; }
-        public string? Type { get; set; }
+        public ICollection<MediaDto>? ImageUrl { get; set; }
         public decimal Price { get; set; }
         public StockStatusEnum StockStatus { get; set; }
     }

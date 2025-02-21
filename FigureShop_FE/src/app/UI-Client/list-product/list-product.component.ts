@@ -31,11 +31,11 @@ export class ListProductComponent implements OnInit, OnDestroy {
     private destroy$ = new Subject<void>();
 
     priceRanges = [
-        { id: 'price-1', label: '$0 - $100', min: 0, max: 100 },
-        { id: 'price-2', label: '$100 - $300', min: 100, max: 300 },
-        { id: 'price-3', label: '$300 - $500', min: 300, max: 500 },
-        { id: 'price-4', label: '$500 - $800', min: 500, max: 800 },
-        { id: 'price-5', label: '$800 - $1500', min: 800, max: 1500 },
+        { id: 'price-1', label: '$0 - $100.000', min: 0, max: 100000 },
+        { id: 'price-2', label: '$100.000 - $300.000', min: 100000, max: 300000 },
+        { id: 'price-3', label: '$300.000 - $500.000', min: 300000, max: 500000 },
+        { id: 'price-4', label: '$500.000 - $800.000', min: 500000, max: 800000 },
+        { id: 'price-5', label: '$800.000 - $1.500.000', min: 800000, max: 1500000 },
     ];
     selectedPrice: { id: string; min: number; max: number } | null = null;
 
@@ -50,12 +50,22 @@ export class ListProductComponent implements OnInit, OnDestroy {
         this.filter();
     }
 
+    formatCurrency(price: number | undefined): string {
+        if (price === undefined) {
+            return ''; // Or handle the undefined case as needed
+        }
+        const formatter = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+        });
+        return formatter.format(price);
+    }
+
     filter(): void {
         this.service.filterProduct(this.name, this.type, this.vendor, this.category, this.min
             , this.max, this.page, this.pageSize).pipe(takeUntil(this.destroy$)).subscribe({
                 next: response => {
                     this.figure = response;
-                    console.log('Data received:', this.figure);
                 },
                 error: error => {
                     console.error('API error:', error);
@@ -67,7 +77,7 @@ export class ListProductComponent implements OnInit, OnDestroy {
         if (this.selectedPrice && this.selectedPrice.id === price.id) {
             this.selectedPrice = null;
             this.min = 0;
-            this.max = 100000;
+            this.max = Number.MAX_VALUE;
             this.updateUrlParam();
             this.filter();
         } else {

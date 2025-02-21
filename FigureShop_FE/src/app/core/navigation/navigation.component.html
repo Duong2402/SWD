@@ -61,10 +61,10 @@
                 <ul class="list-group">
                     <li *ngFor="let item of searchResults?.items" class="list-group-item search-item"
                         (click)="selectResult(item)">
-                        <img [src]="item.imageUrl" alt="image">
+                        <img [src]="item.imageUrl?.[0]?.url" alt="image">
                         <div class="search-info">
                             <p>{{item.name}}</p>
-                            <span class="price">${{item.price}}</span>
+                            <span class="price">{{formatCurrency(item.price)}}</span>
                         </div>
                     </li>
                 </ul>

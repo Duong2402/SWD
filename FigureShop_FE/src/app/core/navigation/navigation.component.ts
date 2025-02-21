@@ -14,7 +14,7 @@ import { Subject, takeUntil } from 'rxjs';
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.css'
 })
-export class NavigationComponent implements OnInit, OnDestroy {
+export class NavigationComponent implements OnDestroy {
 
   isNavbarVisible = true;
   lastScrollPosition = 0;
@@ -30,13 +30,22 @@ export class NavigationComponent implements OnInit, OnDestroy {
   constructor(private figure: FigureService, private router: Router) {
 
   }
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
-  }
+
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  formatCurrency(price: number | undefined): string {
+    if (price === undefined) {
+      return ''; // Or handle the undefined case as needed
+    }
+    const formatter = new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    });
+    return formatter.format(price);
   }
 
   @HostListener('window:scroll', [])
@@ -60,7 +69,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   SearchAll() {
     console.log(this.searchQuery);
-    this.figure.filterProduct(this.searchQuery, "", "", "", 0, 100000, this.page, this.pageSize).
+    this.figure.filterProduct(this.searchQuery, "", "", "", 0, Number.MAX_VALUE, this.page, this.pageSize).
       pipe(takeUntil(this.destroy$)).subscribe({
         next: response => {
           this.searchResults = response;
