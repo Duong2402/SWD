@@ -19,7 +19,6 @@ import { CommonModule } from '@angular/common';
 })
 export class ListProductComponent implements OnInit, OnDestroy {
 
-
     figure?: PagedResult<BaseProductDto>;
     name?: string;
     type?: string;

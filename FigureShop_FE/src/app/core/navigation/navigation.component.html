@@ -39,10 +39,12 @@
             </nav>
         </div>
         <!-- Search Bar -->
-        <div class="col-lg-3 col-md-3">
-            <form action="">
+        <div class="col-lg-3 col-md-3 position-relative">
+            <form action="" (click)="$event.stopPropagation()">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for products">
+                    <input type="text" class="form-control" (input)="SearchAll()" [(ngModel)]="searchQuery"
+                        name="searchQuery" (focus)="showResults = true" (blur)="hideResults()"
+                        placeholder="Search for products">
                     <div class="input-group-append">
                         <span class="input-group-text bg-transparent text-primary">
                             <i class="fa fa-search text-light"></i>
@@ -50,7 +52,29 @@
                     </div>
                 </div>
             </form>
+
+            <!-- Kết quả tìm kiếm ngay bên dưới ô search -->
+            <div *ngIf="showResults" class="search-results">
+                <div class="search-header">
+                    <strong>KẾT QUẢ TÌM KIẾM</strong>
+                </div>
+                <ul class="list-group">
+                    <li *ngFor="let item of searchResults?.items" class="list-group-item search-item"
+                        (click)="selectResult(item)">
+                        <img [src]="item.imageUrl" alt="image">
+                        <div class="search-info">
+                            <p>{{item.name}}</p>
+                            <span class="price">${{item.price}}</span>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="search-footer">
+                    <a href="/tat-ca-san-pham">Xem tất cả {{searchResults?.totalCount}} sản phẩm</a>
+                </div>
+            </div>
         </div>
+
 
         <!-- Icons + Avatar -->
         <div class="col-lg-2 col-md-12 text-right d-flex align-items-center justify-content-end">
@@ -85,6 +109,7 @@
         </div>
 
     </div>
+
 
 
 </div>
