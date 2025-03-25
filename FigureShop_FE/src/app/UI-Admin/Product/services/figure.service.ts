@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { URL_Base } from '../../app.config';
+import { URL_Base } from '../../../app.config';
 import { HttpClient } from '@angular/common/http';
-import { PagedResult } from '../../core/Model/PageResult';
-import { BaseProductDto } from './Model/Figure';
+import { PagedResult } from '../../../core/Model/PageResult';
+import { BaseProductDto, ProductDetail } from '../Model/Figure';
 import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable({
@@ -28,4 +28,10 @@ export class FigureService {
     params.append('pageSize', pageSize.toString());
     return this.http.get<PagedResult<BaseProductDto>>(`${this.api}/FilterProduct/filter?${params.toString()}`);
   }
+
+  getDetail(id: string): Observable<ProductDetail> {
+    return this.http.get<ProductDetail>(`${this.api}/GetDetailById/${id}`);
+  }
+
+
 }

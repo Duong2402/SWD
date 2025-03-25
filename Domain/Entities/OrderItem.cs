@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Domain.Entities
@@ -18,9 +19,10 @@ namespace Domain.Entities
 
         public int Quantity { get; set; }
 
-        public decimal Total {  get; set; }
+        public double Total {  get; set; }
 
         // Nav props
+        [JsonIgnore]
         public Order Order { get; set; }
 
         public Product Product { get; set; }

@@ -11,6 +11,7 @@ using System.Text;
 using Infrastructure.Configurations;
 using Domain.Common.Roles;
 using Application.Services;
+using Infrastructure.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,10 +29,15 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Configuration manager
 builder.Services.AddScoped<Domain.Interfaces.IConfigurationManager, Infrastructure.Configurations.ConfigurationManager>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 
 // Service classes
 builder.Services.AddScoped<UserServices>();
 builder.Services.AddScoped<ProductServices>();
+builder.Services.AddScoped<CartServices>();
+// builder.Services.AddScoped<FigureServices>();
+builder.Services.AddScoped<OrderService>();
 
 // AutoMapper service
 // Quet project, tim tat ca file MappingProfile roi gop lai thanh 1

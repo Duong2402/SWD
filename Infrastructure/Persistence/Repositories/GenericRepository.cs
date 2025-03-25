@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using Application.Common.Pagination;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -12,6 +13,11 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<T?> GetByIdAsync(object id)
         {
             return await _dbSet.FindAsync(id);
+        }
+
+        public async Task<T?> GetByConditionAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.FirstOrDefaultAsync(predicate);
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
@@ -49,7 +55,14 @@ namespace Infrastructure.Persistence.Repositories
                 _dbSet.Remove(entity);
             }
         }
-
+        public async Task DeleteByConditionAsync(Expression<Func<T, bool>> predicate)
+        {
+            var entity = await _dbSet.FirstOrDefaultAsync(predicate);
+            if (entity != null)
+            {
+                _dbSet.Remove(entity);
+            }
+        }
         public async Task<IEnumerable<T>> FilterAll(Expression<Func<T, bool>> predicate,
                                                     string includeProperties = "")
         {
@@ -57,15 +70,27 @@ namespace Infrastructure.Persistence.Repositories
 
             if (!string.IsNullOrWhiteSpace(includeProperties))
             {
-                foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    query = query.Include(includeProperty);
-                }
+                query = PageMethod.IncludeClass(query, includeProperties);
             }
 
             query = query.Where(predicate);
 
             return await query.ToListAsync();
+        }
+
+        public async Task<T> GetDetailById(object id, string includeProperties = "")
+        {
+            var entity = await _dbSet.FindAsync(id);
+
+            if (entity == null) return null; 
+
+            IQueryable<T> query = _dbSet.Where(e => EF.Property<object>(e, "Id") == id);
+            if (!string.IsNullOrWhiteSpace(includeProperties))
+            {
+                query = PageMethod.IncludeClass(query, includeProperties);
+            }
+
+            return await query.FirstOrDefaultAsync();
         }
 
     }

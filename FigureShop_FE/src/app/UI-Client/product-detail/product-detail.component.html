@@ -1,7 +1,7 @@
 <body>
 
     <app-navigation></app-navigation>
-    <div style="margin-top: 30px;"></div>
+    <div style="margin-top: 90px;"></div>
     <!-- Breadcrumb Start -->
     <div class="container-fluid">
         <div class="row px-xl-5">
@@ -22,19 +22,11 @@
         <div class="row px-xl-5">
             <div class="col-lg-5 mb-30">
                 <div id="product-carousel" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner bg-light">
+                    <div *ngFor="let item of product?.imageUrl;" class="carousel-inner bg-light">
                         <div class="carousel-item active">
-                            <img class="w-100 h-100" src="img/product-1.jpg" alt="Image">
+                            <img class="w-100 h-100" [src]="item.url" alt="Image">
                         </div>
-                        <div class="carousel-item">
-                            <img class="w-100 h-100" src="img/product-2.jpg" alt="Image">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="w-100 h-100" src="img/product-3.jpg" alt="Image">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="w-100 h-100" src="img/product-4.jpg" alt="Image">
-                        </div>
+
                     </div>
                     <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
                         <i class="fa fa-2x fa-angle-left text-dark"></i>
@@ -47,7 +39,7 @@
 
             <div class="col-lg-7 h-auto mb-30">
                 <div class="h-100 bg-light p-30">
-                    <h3>Product Name Goes Here</h3>
+                    <h3>{{product?.name}}</h3>
                     <div class="d-flex mb-3">
                         <div class="text-primary mr-2">
                             <small class="fas fa-star"></small>
@@ -58,10 +50,8 @@
                         </div>
                         <small class="pt-1">(99 Reviews)</small>
                     </div>
-                    <h3 class="font-weight-semi-bold mb-4">$150.00</h3>
-                    <p class="mb-4">Volup erat ipsum diam elitr rebum et dolor. Est nonumy elitr erat diam stet sit
-                        clita ea. Sanc ipsum et, labore clita lorem magna duo dolor no sea
-                        Nonumy</p>
+                    <h3 class="font-weight-semi-bold mb-4">{{formatCurrency(product?.price)}}</h3>
+                    <p class="mb-4">{{product?.description}}</p>
                     <div class="d-flex mb-3">
                         <strong class="text-dark mr-3">Sizes:</strong>
                         <form>
@@ -115,19 +105,22 @@
                     <div class="d-flex align-items-center mb-4 pt-2">
                         <div class="input-group quantity mr-3" style="width: 130px;">
                             <div class="input-group-btn">
-                                <button class="btn btn-primary btn-minus">
+                                <button class="btn btn-primary btn-minus" (click)="decrementQuantity()">
                                     <i class="fa fa-minus"></i>
                                 </button>
                             </div>
-                            <input type="text" class="form-control bg-secondary border-0 text-center" value="1">
+                            <input type="text" class="form-control bg-secondary border-0 text-center" [min]="1"
+                                [max]="product?.stockQuantity" name="quantity" [value]="cartItem?.quantity">
                             <div class="input-group-btn">
-                                <button class="btn btn-primary btn-plus">
+                                <button class="btn btn-primary btn-plus" (click)="incrementQuantity()">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
                         </div>
-                        <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To
+                        <button class="btn btn-primary px-3 ml-2 me-2"><i class="fa fa-shopping-cart mr-1"></i> Add To
                             Cart</button>
+                        <button (click)="gotoCheckout()" class="btn btn-primary px-3"><i
+                                class="fa fa-credit-card mr-1"></i> Check out</button>
                     </div>
                     <div class="d-flex pt-2">
                         <strong class="text-dark mr-2">Share on:</strong>
