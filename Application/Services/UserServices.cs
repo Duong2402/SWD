@@ -87,7 +87,7 @@ namespace Application.Services
             return new PagedResult<User>(items, totalCount, page, size);
         }
 
-        public async Task<UpdatePhoneDto> UpdatePhoneNumber(UpdatePhoneDto dto)
+        public async Task<UpdateInfoDto> UpdateInfo(UpdateInfoDto dto)
         {
             var user = await _userRepository.GetByIdAsync(dto.Id);
             if (user == null)
@@ -95,6 +95,7 @@ namespace Application.Services
                 return null;
             }
             user.PhoneNumber = dto.PhoneNumber;
+            user.Address = dto.Address;
             await _unitOfWork.SaveChangesAsync();
             return dto;
         }
@@ -103,6 +104,14 @@ namespace Application.Services
         {
             var updateUser = await _userManager.FindByIdAsync(dto.Id.ToString());
             return await _userManager.ChangePasswordAsync(updateUser, dto.OldPassword, dto.NewPassword);
+        }
+
+        public async Task<bool> DeleteUser(Guid userId)
+        {
+            if (await _userRepository.GetByIdAsync(userId) == null) return false;
+            await _userRepository.DeleteAsync(userId);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
         }
     }
 }

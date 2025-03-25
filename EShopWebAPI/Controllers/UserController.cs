@@ -68,16 +68,16 @@ namespace EShopWebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPagedUsersAsync(int page, int size)
+        public async Task<IActionResult> GetPagedUsers(int page, int size)
         {
             var result = await _userServices.GetPagedUsersAsync(page, size);
             return new JsonResult(Ok(result));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdatePhoneNumber([FromBody] UpdatePhoneDto updateDTO)
+        [HttpPut]
+        public async Task<IActionResult> UpdateInfo([FromBody] UpdateInfoDto updateDTO)
         {
-            var result = await _userServices.UpdatePhoneNumber(updateDTO);
+            var result = await _userServices.UpdateInfo(updateDTO);
             if (result == null)
             {
                 return new JsonResult(NotFound());
@@ -85,12 +85,11 @@ namespace EShopWebAPI.Controllers
             return new JsonResult(result);
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDto updatePasswordDTO)
         {
             try
             {
-
                 return new JsonResult(await _userServices.UpdatePassword(updatePasswordDTO));
             }
             catch (KeyNotFoundException ex)
@@ -98,5 +97,25 @@ namespace EShopWebAPI.Controllers
                 return new JsonResult(NotFound($"{ex.GetType().Name}: {ex.Message}"));
             }
         }
+
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUser(Guid userId)
+        {
+            bool result = await _userServices.DeleteUser(userId);
+            if (result == false)
+            {
+                return new JsonResult(BadRequest());
+            }
+            return new JsonResult(Ok());
+        }
+
+
+        //[HttpGet]
+        //public async Task<IActionResult> GetPagedHistory(int page, int size)
+        //{
+        //    var result = await _userServices.GetPagedHistory(page, size);
+        //    return new JsonResult(Ok(result));
+        //}
     }
 }

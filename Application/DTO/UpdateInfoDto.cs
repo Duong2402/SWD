@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace Application.DTO
 {
-    public class UpdatePhoneDto
+    public class UpdateInfoDto
     {
         public Guid Id { get; set; }
         public string PhoneNumber { get; set; }
+
+        public string Address { get; set; } 
     }
 }
