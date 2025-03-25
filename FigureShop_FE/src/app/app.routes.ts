@@ -7,6 +7,9 @@ import { CheckoutComponent } from './UI-Client/checkout/checkout.component';
 import { LoginComponent } from './core/login/login.component';
 import { SignUpComponent } from './core/sign-up/sign-up.component';
 import { ListProductComponent } from './UI-Client/list-product/list-product.component';
+import { ProductListComponent } from './UI-Admin/Product/product-list/product-list.component';
+import { OrderListComponent } from './UI-Admin/Order/order-list/order-list.component';
+import { OrderDetailComponent } from './UI-Admin/Order/order-detail/order-detail.component';
 
 export const routes: Routes = [
     {
@@ -18,7 +21,7 @@ export const routes: Routes = [
         component: ListProductComponent,
     },
     {
-        path: 'shop/id',
+        path: 'shop/:id',
         component: ProductDetailComponent
     },
     {
@@ -37,6 +40,17 @@ export const routes: Routes = [
         path: 'register',
         component: SignUpComponent
     },
-    
+    {
+        path: 'admin/products',
+        component: ProductListComponent
+    },
+    {
+        path: 'admin/orders',
+        component: OrderListComponent
+    },
+    {
+        path: 'order/:id',
+        component: OrderDetailComponent
+    }
 ];
 

@@ -4,8 +4,8 @@ import { FooterComponent } from "../../core/footer/footer.component";
 import { PagedResult } from '../../core/Model/PageResult';
 import { BaseProductDto } from '../../UI-Admin/Product/Model/Figure';
 import { Subject } from 'rxjs/internal/Subject';
-import { FigureService } from '../../UI-Admin/Product/figure.service';
-import { Router } from '@angular/router';
+import { FigureService } from '../../UI-Admin/Product/services/figure.service';
+import { Router, RouterLink } from '@angular/router';
 import { takeUntil } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -13,7 +13,7 @@ import { CartService } from '../../UI-Admin/Cart/cart.service';
 @Component({
     selector: 'app-checkout',
     standalone: true,
-    imports: [NavigationComponent, FooterComponent, FormsModule, CommonModule],
+    imports: [NavigationComponent, FooterComponent, FormsModule, CommonModule, RouterLink],
     templateUrl: './list-product.component.html',
     styleUrl: './list-product.component.css'
 })

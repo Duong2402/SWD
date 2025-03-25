@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { FigureService } from '../../UI-Admin/Product/figure.service';
+import { FigureService } from '../../UI-Admin/Product/services/figure.service';
 import { BaseProductDto } from '../../UI-Admin/Product/Model/Figure';
 import { PagedResult } from '../Model/PageResult';
 import { Subject, takeUntil } from 'rxjs';

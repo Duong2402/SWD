@@ -1,13 +1,12 @@
 ﻿using Application.Common.Pagination;
 using Application.DTO;
 using Application.DTO.BaseDTO;
+using Application.DTO.ProductDTO;
 using Application.Interfaces.Pagination;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Linq.Expressions;
-using System.Net.WebSockets;
 
 namespace Application.Services
 {
@@ -68,7 +67,6 @@ namespace Application.Services
                 page = 1;
             }
 
-
             Expression<Func<Product, bool>> filter = f =>
                  (string.IsNullOrEmpty(name) || f.Name.Contains(name)) &&
                  (!minPrice.HasValue || f.Price >= minPrice.Value) &&
@@ -79,17 +77,12 @@ namespace Application.Services
             foreach (var product in products)
             {
                 var mediaList = product.Media.ToList();
-                if(mediaList != null)
+                if (mediaList != null)
                 {
-                    Console.WriteLine("List media: " + mediaList.Count);
                     foreach (var item in mediaList)
                     {
                         item.Url = URLImageRoot + item.Url;
                     }
-                }
-                else
-                {
-                    Console.WriteLine("List media is null ");
                 }
 
             }
@@ -100,6 +93,29 @@ namespace Application.Services
 
             return result;
 
+        }
+
+        public async Task<FigureDetailDTO> FigureDetailDTO(Guid productId)
+        {
+            var product = await _figureRepository.GetDetailById(productId, "Media");
+            if (product == null)
+            {
+                throw new KeyNotFoundException("Could not find requested product.");
+            }
+
+
+            var mediaList = product.Media.ToList();
+            Console.WriteLine("Media profile: "+mediaList.Count());
+            if (mediaList != null)
+            {
+                foreach (var item in mediaList)
+                {
+                    item.Url = URLImageRoot + item.Url;
+                    Console.WriteLine(item.Url);
+                }
+            }
+            var productDto = _mapper.Map<FigureDetailDTO>(product);
+            return productDto;
         }
 
 

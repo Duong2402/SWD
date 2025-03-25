@@ -1,4 +1,7 @@
-﻿namespace Application.Common.Pagination
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
+
+namespace Application.Common.Pagination
 {
     public class PageMethod
     {
@@ -16,6 +19,19 @@
             Console.WriteLine($"page size in handle: {items.Count()}");
 
             return new PagedResult<T>(items, totalCount, currentPage, pageSize);
+        }
+
+        public static IQueryable<T> IncludeClass<T> (IQueryable<T> query, string includeProperties) where T : class
+        {
+            if (!string.IsNullOrWhiteSpace(includeProperties))
+            {
+                foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+
+            return query;
         }
     }
 }

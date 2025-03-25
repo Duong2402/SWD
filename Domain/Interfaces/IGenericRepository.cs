@@ -12,7 +12,8 @@ namespace Domain.Interfaces
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(object id);
-        Task DeleteByConditionAsync(Expression<Func<T, bool>> predicate);
 
+        Task DeleteByConditionAsync(Expression<Func<T, bool>> predicate);
+        Task<T> GetDetailById(object id, string includeProperties = "");
     }
 }
