@@ -86,5 +86,23 @@ namespace Application.Services
             var (items, totalCount) = await _userRepository.GetPagedAsync(page, size);
             return new PagedResult<User>(items, totalCount, page, size);
         }
+
+        public async Task<UpdatePhoneDto> UpdatePhoneNumber(UpdatePhoneDto dto)
+        {
+            var user = await _userRepository.GetByIdAsync(dto.Id);
+            if (user == null)
+            {
+                return null;
+            }
+            user.PhoneNumber = dto.PhoneNumber;
+            await _unitOfWork.SaveChangesAsync();
+            return dto;
+        }
+
+        public async Task<IdentityResult> UpdatePassword(UpdatePasswordDto dto)
+        {
+            var updateUser = await _userManager.FindByIdAsync(dto.Id.ToString());
+            return await _userManager.ChangePasswordAsync(updateUser, dto.OldPassword, dto.NewPassword);
+        }
     }
 }
