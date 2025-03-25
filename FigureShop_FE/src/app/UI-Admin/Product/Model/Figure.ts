@@ -11,14 +11,20 @@ export interface BaseProductDto {
 export interface ProductDetail {
     id: string;
     name: string;
-    imageUrl?: string;
-    vendors?: string;
-    type?: string;
+    imageUrl?: Media[];
+    description?: string;
     price: number;
+    stockQuantity: number;
     category: CategoryList;
 }
 
 export interface Media {
     id: string;
     url: string;
+}
+
+export interface CartItem {
+    productId: string;
+    quantity: number;
+    total?: number;
 }

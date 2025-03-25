@@ -1,0 +1,60 @@
+<body class="bg-light">
+
+    <div class="container">
+        <div class="order-detail-container p-4">
+            <h3 class="text-center mb-4 text-primary">Chi Tiết Đơn Hàng</h3>
+
+            <!-- Thông tin đơn hàng -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-person-fill"></i> Người mua:</h5>
+                    <p class="highlight-text" id="buyerName">{{orderDetail?.user?.userName}}</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h5><i class="bi bi-calendar-check-fill"></i> Ngày mua:</h5>
+                    <p class="highlight-text" id="orderDate">{{ orderDetail?.orderDate| date:'dd/MM/yyyy HH:mm' }}</p>
+                </div>
+            </div>
+
+            <!-- Bảng danh sách sản phẩm -->
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle text-center">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Hình Ảnh</th>
+                            <th>Tên Sản Phẩm</th>
+                            <th>Số Lượng</th>
+                            <th>Giá</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderDetails">
+                        <tr *ngFor="let item of orderDetail?.items">
+                            <td>
+                                <img [src]="item.product.imageUrl || 'https://via.placeholder.com/70'"
+                                    alt="Product Image" class="product-img">
+                            </td>
+                            <td class="fw-bold">{{ item.product.name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td class="text-danger fw-bold">{{ item.product.price | currency:'VND' }}</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+            <!-- Tổng tiền -->
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <h5 class="highlight-text">Tổng cộng:</h5>
+                <h4 class="text-success fw-bold">{{orderDetail?.totalAmount | currency:'VND'}}</h4>
+            </div>
+
+            <!-- Nút hành động -->
+            <div class="text-center mt-4">
+                <a [routerLink]="['/admin/orders']" class="btn btn-outline-secondary me-2 highlight-text"><i
+                        class="bi bi-arrow-left"></i> Quay
+                    lại</a>
+                <button class="btn btn-primary"><i class="bi bi-printer"></i> In Hóa Đơn</button>
+            </div>
+        </div>
+    </div>
+</body>

@@ -1,4 +1,5 @@
 ﻿using Application.DTO;
+using Application.DTO.ProductDTO;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -55,6 +56,19 @@ namespace EShopWebAPI.Controllers
             }
 
             return new JsonResult(Ok(result));
+        }
+
+        [HttpGet("{productId}")]
+        public async Task<IActionResult> GetDetailById(Guid productId)
+        {
+            var result = await _productServices.FigureDetailDTO(productId);
+
+            if (result == null)
+            {
+                return (NotFound());
+            }
+
+            return (Ok(result));
         }
 
         [HttpPost]
