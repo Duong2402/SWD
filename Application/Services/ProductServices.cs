@@ -4,7 +4,9 @@ using Application.Interfaces.Pagination;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Linq.Expressions;
+using System.Net.WebSockets;
 
 namespace Application.Services
 {
@@ -57,25 +59,38 @@ namespace Application.Services
             return await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<IPagedResult<ProductDto>> Filter(string? name, string? type, 
-            string? category,decimal? minPrice, decimal? maxPrice, int page, int sizePage = 10 )
+        public async Task<IPagedResult<BaseProductDto>> Filter(string? name,
+            string? category, double? minPrice, double? maxPrice, int page, int sizePage = 10)
         {
-            if(page <= 0 )
+            if (page <= 0)
             {
                 page = 1;
             }
 
 
-            Expression<Func<Product, bool>> filter = p =>
-                 (string.IsNullOrEmpty(name) || p.Name.Contains(name)) &&
-                 (!minPrice.HasValue || p.Price >= minPrice.Value) &&
-                 (!maxPrice.HasValue || p.Price <= maxPrice.Value) &&
-                 (string.IsNullOrEmpty(category) || p.Category.Name.Contains(category));
+            Expression<Func<Product, bool>> filter = f =>
+                 (string.IsNullOrEmpty(name) || f.Name.Contains(name)) &&
+                 (!minPrice.HasValue || f.Price >= minPrice.Value) &&
+                 (!maxPrice.HasValue || f.Price <= maxPrice.Value) &&
+                 (string.IsNullOrEmpty(category) || f.Category.Name.Contains(category));
 
-            var products = await _figureRepository.FilterAll(filter,"Category");
-            foreach(var product in products)
+            var products = await _figureRepository.FilterAll(filter, "Media");
+            foreach (var product in products)
             {
-                product.Media.Url =  URLImageRoot + product.Media.Url;
+                var mediaList = product.Media.ToList();
+                if(mediaList != null)
+                {
+                    Console.WriteLine("List media: " + mediaList.Count);
+                    foreach (var item in mediaList)
+                    {
+                        item.Url = URLImage + item.Url;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("List media is null ");
+                }
+
             }
 
             var productsDto = _mapper.Map<IEnumerable<ProductDto>>(products);
@@ -85,5 +100,7 @@ namespace Application.Services
             return result;
 
         }
+
+
     }
 }

@@ -14,9 +14,12 @@ namespace Application.Common.Mappings
         public MappingProfile()
         {
             CreateMap<User, UserProfileDto>().ReverseMap();
-            CreateMap<Product, ProductDto>().ReverseMap();
-            CreateMap<Product, ProductCreateDto>().ReverseMap();
-            CreateMap<Category, CategoryDto>().ReverseMap();
+            CreateMap<Product, BaseProductDto>()
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.Media)); // Mapping Media -> ImageUrl
+
+            CreateMap<Media, MediaDto>().ReverseMap();
+
+
         }
     }
 }

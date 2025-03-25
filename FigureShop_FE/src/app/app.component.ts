@@ -12,4 +12,7 @@ import { NavigationComponent } from "./core/navigation/navigation.component";
 })
 export class AppComponent {
   title = 'FigureShop';
+
+
+
 }

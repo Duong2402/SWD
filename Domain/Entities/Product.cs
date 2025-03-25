@@ -11,7 +11,7 @@ namespace Domain.Entities
 
         public string Description { get; set; }
 
-        public Media? Media { get; set; }
+        public ICollection<Media>? Media { get; set; }
 
         public decimal Price { get; set; }
 
