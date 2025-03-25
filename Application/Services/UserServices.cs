@@ -86,5 +86,11 @@ namespace Application.Services
             var (items, totalCount) = await _userRepository.GetPagedAsync(page, size);
             return new PagedResult<User>(items, totalCount, page, size);
         }
+
+        public async Task<IdentityResult> UpdatePasswordAsync(UpdatePasswordDTO updatePasswordDTO)
+        {
+            var updateUser = await _userManager.FindByIdAsync(updatePasswordDTO.UserId.ToString());
+            return await _userManager.ChangePasswordAsync(updateUser, updatePasswordDTO.OldPassword, updatePasswordDTO.NewPassword);
+        }
     }
 }

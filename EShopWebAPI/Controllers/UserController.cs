@@ -73,5 +73,21 @@ namespace EShopWebAPI.Controllers
             var result = await _userServices.GetPagedUsersAsync(page, size);
             return new JsonResult(Ok(result));
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDTO updatePasswordDTO)
+        {
+            try
+            {
+                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (currentUserId == updatePasswordDTO.UserId.ToString())
+                    return new JsonResult(await _userServices.UpdatePasswordAsync(updatePasswordDTO));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return new JsonResult(NotFound($"{ex.GetType().Name}: {ex.Message}"));
+            }
+            return new JsonResult(BadRequest());
+        }
     }
 }
