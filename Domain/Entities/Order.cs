@@ -18,7 +18,7 @@ namespace Domain.Entities
 
         public DateTime OrderDate { get; set; } = DateTime.Now;
 
-        public double TotalAmount { get; set; } = 0;
+        public decimal TotalAmount { get; set; } = 0;
 
         public string Note { get; set; } = String.Empty;
     }

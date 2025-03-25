@@ -7,14 +7,14 @@ namespace EShopWebAPI.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class FigureController(FigureServices figureServices) : ControllerBase
+    public class FigureController(ProductServices productServices) : ControllerBase
     {
-        private readonly FigureServices _figureServices = figureServices;
+        private readonly ProductServices _productServices = productServices;
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _figureServices.GetAllAsync();
+            var result = await _productServices.GetAllAsync();
 
             return new JsonResult(Ok(result));
         }
@@ -23,14 +23,13 @@ namespace EShopWebAPI.Controllers
         public async Task<IActionResult> FilterProduct(
             [FromQuery] string? name,
             [FromQuery] string? type,
-            [FromQuery] string? vendor,
             [FromQuery] string? category,
             [FromQuery] decimal? min,
             [FromQuery] decimal? max,
             [FromQuery] int page,
             [FromQuery] int pageSize = 10)
         {
-           var products = await _figureServices.Filter(name, type, vendor, category, min, max, page, pageSize);
+           var products = await _productServices.Filter(name, type, category, min, max, page, pageSize);
             if(products == null )
             {
                 return new JsonResult(NotFound());
@@ -41,7 +40,7 @@ namespace EShopWebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPaged(int page, int size = 10)
         {
-            var result = await _figureServices.GetPagedAsync(page, size);
+            var result = await _productServices.GetPagedAsync(page, size);
 
             return new JsonResult(Ok(result));
         }
@@ -49,7 +48,7 @@ namespace EShopWebAPI.Controllers
         [HttpGet("{productId}")]
         public async Task<IActionResult> Get(Guid productId)
         {
-            var result = await _figureServices.GetByIdAsync(productId);
+            var result = await _productServices.GetByIdAsync(productId);
 
             if (result == null)
             {
@@ -60,11 +59,11 @@ namespace EShopWebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] FigureCreateDto dto)
+        public async Task<IActionResult> Create([FromBody] ProductCreateDto dto)
         {
             try
             {
-                await _figureServices.CreateFigureAsync(dto);
+                await _productServices.CreateFigureAsync(dto);
             }
             catch (ValidationException ex)
             {
@@ -75,11 +74,11 @@ namespace EShopWebAPI.Controllers
         }
 
         [HttpPut("{postId}")]
-        public async Task<IActionResult> Update(Guid postId, [FromBody] FigureCreateDto dto)
+        public async Task<IActionResult> Update(Guid postId, [FromBody] ProductCreateDto dto)
         {
             try
             {
-                await _figureServices.UpdateFigureAsync(postId, dto);
+                await _productServices.UpdateFigureAsync(postId, dto);
             }
             catch (KeyNotFoundException ex)
             {
@@ -95,7 +94,7 @@ namespace EShopWebAPI.Controllers
         {
             try
             {
-                await _figureServices.DeleteFigureAsync(postId);
+                await _productServices.DeleteFigureAsync(postId);
             }
             catch (KeyNotFoundException ex)
             {
