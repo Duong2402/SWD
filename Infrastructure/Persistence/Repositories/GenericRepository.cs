@@ -93,5 +93,33 @@ namespace Infrastructure.Persistence.Repositories
             return await query.FirstOrDefaultAsync();
         }
 
+        // Example usage: _repository.GetPagedAsync(1, 10, x => x.Name.Contains("Memaybeo"), e => e.OrderByDescending(x => x.DateCreated)); 
+        public async Task<(IEnumerable<T> Items, int TotalCount)> GetPagedAsync(
+           int page = 1,
+           int size = 10,
+           Expression<Func<T, bool>>? filter = null,
+           Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null)
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+
+            var items = await query
+                .Skip((page - 1) * size)
+                .Take(size)
+                .ToListAsync();
+
+            return (items, totalCount);
+        }
     }
 }
