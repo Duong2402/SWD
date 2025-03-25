@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { takeUntil } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
+import { CartService } from '../../UI-Admin/Cart/cart.service';
 @Component({
     selector: 'app-checkout',
     standalone: true,
@@ -41,7 +41,7 @@ export class ListProductComponent implements OnInit, OnDestroy {
 
 
 
-    constructor(private service: FigureService, private router: Router) { }
+    constructor(private service: FigureService, private cartService: CartService, private router: Router) { }
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
@@ -139,6 +139,16 @@ export class ListProductComponent implements OnInit, OnDestroy {
         }
         return result;
     }
-
+    onAddToCart(productId: string, quantity: number): void{
+        const userId = "C1E15921-E8F6-4CBC-EACD-08DD67BB3796";
+        this.cartService.addToCart(userId, productId, quantity).pipe(takeUntil(this.destroy$)).subscribe({
+          next: (response) => {
+            console.log('Product add successfully', response);
+          },
+          error: (err) => {
+            console.error('Error when adding product to cart.', err);
+          }
+        });
+    }
 
 }
