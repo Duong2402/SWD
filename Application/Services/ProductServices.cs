@@ -11,12 +11,12 @@ using System.Net.WebSockets;
 
 namespace Application.Services
 {
-    public class FigureServices(IUnitOfWork unitOfWork, IMapper mapper)
+    public class ProductServices(IUnitOfWork unitOfWork, IMapper mapper)
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IGenericRepository<Product> _figureRepository = unitOfWork.GetRepository<Product>();
         private readonly IMapper _mapper = mapper;
-        private const string URLImage = "https://localhost:7241/images/";
+        private const string URLImageRoot = "https://localhost:7241/images/";
 
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
@@ -34,7 +34,7 @@ namespace Application.Services
             return await _figureRepository.GetByIdAsync(productId);
         }
 
-        public async Task<int> CreateFigureAsync(FigureCreateDto dto)
+        public async Task<int> CreateFigureAsync(ProductCreateDto dto)
         {
             var figure = _mapper.Map<Product>(dto);
 
@@ -43,7 +43,7 @@ namespace Application.Services
             return await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<int> UpdateFigureAsync(Guid productId, FigureCreateDto dto)
+        public async Task<int> UpdateFigureAsync(Guid productId, ProductCreateDto dto)
         {
             var figure = await _figureRepository.GetByIdAsync(productId) ?? throw new KeyNotFoundException("Could not find requested product.");
 
@@ -84,7 +84,7 @@ namespace Application.Services
                     Console.WriteLine("List media: " + mediaList.Count);
                     foreach (var item in mediaList)
                     {
-                        item.Url = URLImage + item.Url;
+                        item.Url = URLImageRoot + item.Url;
                     }
                 }
                 else

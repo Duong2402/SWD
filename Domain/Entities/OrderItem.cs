@@ -18,7 +18,7 @@ namespace Domain.Entities
 
         public int Quantity { get; set; }
 
-        public double Total {  get; set; }
+        public decimal Total {  get; set; }
 
         // Nav props
         public Order Order { get; set; }

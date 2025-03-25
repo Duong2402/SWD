@@ -1,14 +1,18 @@
-﻿using Domain.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Domain.Common.BaseEntities;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Persistence
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfigurationManager configurationManager) : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options)
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration configuration, IHttpContextAccessor httpContextAccessor) : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options)
     {
-        private readonly IConfigurationManager _configurationManager = configurationManager;
+        private readonly IConfiguration _configuration = configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
         public DbSet<Product> Products { get; set; }
 
@@ -16,7 +20,7 @@ namespace Infrastructure.Persistence
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var connectionString = _configurationManager.GetConnectionString("Default");
+                var connectionString = _configuration.GetConnectionString("Default");
                 optionsBuilder.UseSqlServer(connectionString);
             }
         }
@@ -24,6 +28,50 @@ namespace Infrastructure.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+        }
+
+        public override int SaveChanges()
+        {
+            _ = Guid.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId);
+
+            foreach (var entry in ChangeTracker.Entries<BaseAuditableEntity>())
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Entity.CreatedAt = DateTime.Now;
+                    entry.Entity.CreatedBy = userId;
+                }
+
+                if (entry.State == EntityState.Modified)
+                {
+                    entry.Entity.LastModifiedAt = DateTime.Now;
+                    entry.Entity.LastModifiedBy = userId;
+                }
+            }
+
+            return base.SaveChanges();
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            _ = Guid.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId);
+
+            foreach (var entry in ChangeTracker.Entries<BaseAuditableEntity>())
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Entity.CreatedAt = DateTime.Now;
+                    entry.Entity.CreatedBy = userId;
+                }
+
+                if (entry.State == EntityState.Modified)
+                {
+                    entry.Entity.LastModifiedAt = DateTime.Now;
+                    entry.Entity.LastModifiedBy = userId;
+                }
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }
