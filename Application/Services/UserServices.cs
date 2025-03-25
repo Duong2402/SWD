@@ -11,6 +11,7 @@ namespace Application.Services
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IGenericRepository<User> _userRepository = unitOfWork.GetRepository<User>();
+        private readonly IGenericRepository<Order> _orderRepository = unitOfWork.GetRepository<Order>();
         private readonly UserManager<User> _userManager = userManager;
         private readonly IMapper _mapper = mapper;
 
@@ -113,5 +114,23 @@ namespace Application.Services
             await _unitOfWork.SaveChangesAsync();
             return true;
         }
+
+        public async Task<PagedResult<Order>> GetPagedOrderHistory(int page, int size, string userId)
+        {
+            if (!Guid.TryParse(userId, out Guid id))
+            {
+                throw new ArgumentException("Invalid userId format");
+            }
+
+            var (items, totalCount) = await _orderRepository.GetPagedAsync(
+                page,
+                size,
+                x => x.UserId == id,
+                y => y.OrderByDescending(x => x.OrderDate)
+            );
+
+            return new PagedResult<Order>(items, totalCount, page, size);
+        }
+
     }
 }

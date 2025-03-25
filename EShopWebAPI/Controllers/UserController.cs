@@ -111,11 +111,13 @@ namespace EShopWebAPI.Controllers
         }
 
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetPagedHistory(int page, int size)
-        //{
-        //    var result = await _userServices.GetPagedHistory(page, size);
-        //    return new JsonResult(Ok(result));
-        //}
+        [HttpGet]
+        public async Task<IActionResult> GetPagedOrderHistory(int page, int size)
+        {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _userServices.GetPagedOrderHistory(page, size,currentUserId);
+            return new JsonResult(Ok(result));
+        }
+
     }
 }
