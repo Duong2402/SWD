@@ -42,7 +42,7 @@ namespace Application.Services
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, "Member");
+                await _userManager.AddToRoleAsync(user, "Customer");
             }
 
             return result;
