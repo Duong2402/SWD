@@ -14,6 +14,11 @@ namespace Infrastructure.Persistence.Repositories
             return await _dbSet.FindAsync(id);
         }
 
+        public async Task<T?> GetByConditionAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.FirstOrDefaultAsync(predicate);
+        }
+
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
@@ -49,7 +54,14 @@ namespace Infrastructure.Persistence.Repositories
                 _dbSet.Remove(entity);
             }
         }
-
+        public async Task DeleteByConditionAsync(Expression<Func<T, bool>> predicate)
+        {
+            var entity = await _dbSet.FirstOrDefaultAsync(predicate);
+            if (entity != null)
+            {
+                _dbSet.Remove(entity);
+            }
+        }
         public async Task<IEnumerable<T>> FilterAll(Expression<Func<T, bool>> predicate,
                                                     string includeProperties = "")
         {
