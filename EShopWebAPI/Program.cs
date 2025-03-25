@@ -72,7 +72,11 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>()
 .AddDefaultTokenProviders();
 
 // JWT configurations
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -85,11 +89,45 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]))
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                if (context.Request.Cookies.TryGetValue(builder.Configuration["AuthTokenOptions:Name"], out var token))
+                {
+                    context.Token = token;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
     });
+
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("CustomerPolicy", policy => policy.RequireRole(UserRoles.Customer, UserRoles.Admin))
+    .AddPolicy("AdminPolicy", policy => policy.RequireRole(UserRoles.Admin));
 
 builder.Services.Configure<AuthTokenOptions>(
     builder.Configuration.GetSection("AuthTokenOptions")
 );
+
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+    options.CheckConsentNeeded = context => true;
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        builder => builder
+            .SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost") // Allow any localhost port
+            .AllowCredentials()
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 
 var app = builder.Build();
 
@@ -117,6 +155,57 @@ using (var scope = app.Services.CreateScope())
     {
         await roleManager.CreateAsync(new IdentityRole<Guid>(UserRoles.Customer));
     }
+
+    var userManager = services.GetRequiredService<UserManager<User>>();
+
+    var passwordValidators = userManager.PasswordValidators;
+    var userValidators = userManager.UserValidators;
+    userManager.PasswordValidators.Clear();
+    userManager.UserValidators.Clear();
+
+    var admin = await userManager.FindByNameAsync("admin");
+    if (admin == null)
+    {
+        admin = new User
+        {
+            Id = Guid.NewGuid(),
+            UserName = "admin",
+            Email = "admin@animeforum.com"
+        };
+
+        await userManager.CreateAsync(admin, "admin");
+        await userManager.AddToRoleAsync(admin, UserRoles.Admin);
+    }
+
+    var customer = await userManager.FindByNameAsync("customer");
+    if (customer == null)
+    {
+        customer = new User
+        {
+            Id = Guid.NewGuid(),
+            UserName = "customer",
+            Email = "member@figureshop.com"
+        };
+
+        await userManager.CreateAsync(customer, "customer");
+        await userManager.AddToRoleAsync(customer, UserRoles.Customer);
+    }
+
+    foreach (var validator in passwordValidators)
+    {
+        userManager.PasswordValidators.Add(validator);
+    }
+
+    foreach (var validator in userValidators)
+    {
+        userManager.UserValidators.Add(validator);
+    }
+
+
+    if (db.ChangeTracker.HasChanges())
+    {
+        await db.SaveChangesAsync();
+    }
 }
 
 // Configure the HTTP request pipeline.
@@ -125,6 +214,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>
@@ -134,6 +224,7 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.UseRouting();
+
 app.UseHttpsRedirection();
 
 app.UseCors(options =>
@@ -143,6 +234,9 @@ app.UseCors(options =>
     options.AllowAnyMethod();
 });
 
+app.UseCors("AllowFrontend");
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

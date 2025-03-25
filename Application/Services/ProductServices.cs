@@ -1,5 +1,6 @@
 ﻿using Application.Common.Pagination;
 using Application.DTO;
+using Application.DTO.BaseDTO;
 using Application.Interfaces.Pagination;
 using AutoMapper;
 using Domain.Entities;
@@ -83,7 +84,7 @@ namespace Application.Services
                     Console.WriteLine("List media: " + mediaList.Count);
                     foreach (var item in mediaList)
                     {
-                        item.Url = URLImage + item.Url;
+                        item.Url = URLImageRoot + item.Url;
                     }
                 }
                 else
@@ -93,9 +94,9 @@ namespace Application.Services
 
             }
 
-            var productsDto = _mapper.Map<IEnumerable<ProductDto>>(products);
+            var productsDto = _mapper.Map<IEnumerable<BaseProductDto>>(products);
 
-            var result = PageMethod.ToPaginatedList<ProductDto>(productsDto, page, sizePage);
+            var result = PageMethod.ToPaginatedList<BaseProductDto>(productsDto, page, sizePage);
 
             return result;
 

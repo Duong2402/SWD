@@ -13,7 +13,7 @@ namespace Domain.Entities
 
         public ICollection<Media>? Media { get; set; }
 
-        public decimal Price { get; set; }
+        public double Price { get; set; }
 
         public int StockQuantity {  get; set; }
 

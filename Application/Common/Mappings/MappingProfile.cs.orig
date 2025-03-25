@@ -1,5 +1,4 @@
 ﻿using Application.DTO;
-using Application.DTO.BaseDTO;
 using AutoMapper;
 using Domain.Entities;
 
@@ -16,11 +15,16 @@ namespace Application.Common.Mappings
         {
             CreateMap<User, UserProfileDto>().ReverseMap();
 <<<<<<< HEAD
-            CreateMap<Product, FigureDto>().ReverseMap();
-=======
-            CreateMap<Figure, FigureCreateDto>().ReverseMap();
-            CreateMap<Figure, BaseProductDto>().ReverseMap();
+            CreateMap<Product, ProductDto>().ReverseMap();
+            CreateMap<Product, ProductCreateDto>().ReverseMap();
             CreateMap<Category, CategoryDto>().ReverseMap();
+=======
+            CreateMap<Product, BaseProductDto>()
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.Media)); // Mapping Media -> ImageUrl
+
+            CreateMap<Media, MediaDto>().ReverseMap();
+
+
 >>>>>>> main
         }
     }

@@ -1,4 +1,5 @@
-﻿using Application.DTO;
+﻿using Application.Common.Pagination;
+using Application.DTO;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -22,19 +23,30 @@ namespace Application.Services
             return user;
         }
 
-        public async Task<IdentityResult> Register(RegisterDto dto) 
+        public async Task<User?> GetUserByEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user;
+        }
+
+        public async Task<User?> GetUserByUsername(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            return user;
+        }
+
+        public async Task<IdentityResult> Register(RegisterDto dto)
         {
             var user = new User { UserName = dto.UserName, Email = dto.Email };
             var result = await _userManager.CreateAsync(user, dto.Password);
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, "Customer");
+                await _userManager.AddToRoleAsync(user, "Member");
             }
 
             return result;
         }
-
         public async Task<bool> Login(LoginDto dto)
         {
             var user = await this.FindByLoginAsync(dto);
@@ -49,7 +61,7 @@ namespace Application.Services
             return result;
         }
 
-        public async Task<UserProfileDto?> GetProfileDetails(Guid id)
+        public async Task<UserProfileDto?> GetProfileDetails(Guid? id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
 
@@ -63,6 +75,16 @@ namespace Application.Services
             result.Roles = await _userManager.GetRolesAsync(user);
 
             return result;
+        }
+        public async Task<User?> FindByIdAsync(Guid userId)
+        {
+            return await _userManager.FindByIdAsync(userId.ToString());
+        }
+
+        public async Task<PagedResult<User>> GetPagedUsersAsync(int page, int size)
+        {
+            var (items, totalCount) = await _userRepository.GetPagedAsync(page, size);
+            return new PagedResult<User>(items, totalCount, page, size);
         }
     }
 }
