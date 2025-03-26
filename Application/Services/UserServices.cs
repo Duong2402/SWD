@@ -132,5 +132,20 @@ namespace Application.Services
             return new PagedResult<Order>(items, totalCount, page, size);
         }
 
+        public async Task<UserStatusDto> ChangeUserStatus(UserStatusDto userStatusDto)
+        {
+            var user = await _userRepository.GetByIdAsync(userStatusDto);
+            if (userStatusDto.ban)
+            {         
+                user.Active = true;
+            }
+            else
+            {
+                user.Active = false;    
+            }
+            await _unitOfWork.SaveChangesAsync();
+            return userStatusDto;
+        }
+
     }
 }

@@ -119,5 +119,12 @@ namespace EShopWebAPI.Controllers
             return new JsonResult(Ok(result));
         }
 
+        [HttpPut]
+        public async Task<IActionResult> ChangeUserStatus([FromBody] UserStatusDto userStatus)
+        {
+            var result = await _userServices.ChangeUserStatus(userStatus);
+            return new JsonResult(Ok(result));
+        }
+
     }
 }
