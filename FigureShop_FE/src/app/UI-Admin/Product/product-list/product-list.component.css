@@ -1,19 +1,103 @@
+.admin-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.product-img {
+  width: 60px; /* Hoặc kích thước mong muốn */
+  height: 60px;
+  object-fit: cover; /* Giữ tỷ lệ và cắt nếu cần */
+  border-radius: 5px; /* Bo góc nhẹ */
+}
+
+
+.sidebar {
+  width: 250px;
+  background-color: #f8f9fa;
+  transition: width 0.3s ease;
+  border-right: 1px solid #dee2e6;
+  position: relative;
+  z-index: 1000;
+}
+
+.sidebar-collapsed {
+  width: 70px;
+}
+
+.toggle-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1100;
+}
+
+.nav-item {
+  width: 100%;
+}
+
+.nav-item.active .nav-link {
+  background-color: #e9ecef;
+  font-weight: bold;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.nav-link:hover {
+  background-color: #e9ecef;
+}
+
+.nav-link i {
+  margin-right: 15px;
+  font-size: 20px;
+}
+
+.nav-text {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  white-space: nowrap;
+}
+
+.sidebar-collapsed .nav-text {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+}
+
 .content {
-    width: calc(100% - 250px);
-    padding: 20px;
-    transition: all 0.3s ease-in-out;
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  transition: padding-left 0.3s ease;
+}
+
+.content-expanded {
+  padding-left: 0;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: absolute;
+    height: 100%;
   }
-  
-  .sidebar.toggled + .content {
-    width: calc(100% - 80px);
+
+  .content {
+    margin-left: 70px;
   }
-  
-  .table {
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  
-  .table th, .table td {
-    vertical-align: middle;
-  }
-  
+}

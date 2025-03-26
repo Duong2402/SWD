@@ -19,7 +19,20 @@ export class AuthService {
   logout(): Observable<any> {
     const token = this.cookieService.get('token'); // Lấy token từ cookie
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
     return this.httpClient.post(`${this.api}/Logout`, {}, { headers });
+  }
+
+  getUserId(): string | null {
+    const token = this.cookieService.get('token');
+    if (!token) {
+      return null;
+    }
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.sub || payload.userId || null;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
   }
 }

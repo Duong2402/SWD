@@ -72,8 +72,12 @@ namespace EShopWebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ProductCreateDto dto)
+        public async Task<IActionResult> Create([FromForm] ProductCreateDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             try
             {
                 await _productServices.CreateFigureAsync(dto);
@@ -87,7 +91,7 @@ namespace EShopWebAPI.Controllers
         }
 
         [HttpPut("{postId}")]
-        public async Task<IActionResult> Update(Guid postId, [FromBody] ProductCreateDto dto)
+        public async Task<IActionResult> Update(Guid postId, [FromForm] ProductCreateDto dto)
         {
             try
             {
@@ -117,6 +121,29 @@ namespace EShopWebAPI.Controllers
             return new JsonResult(NoContent());
         }
 
-       
+        [HttpGet]
+        public async Task<IActionResult> CategoryList()
+        {
+            try
+            {
+                var categories = await _productServices.CategoryList();
+
+                if (categories == null || !categories.Any())
+                {
+                    return NotFound("No categories found.");
+                }
+
+                return Ok(categories);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in CategoryList API: {ex.Message}");
+
+                return StatusCode(500, "An error occurred while retrieving categories.");
+            }
+        }
+
+
+
     }
 }

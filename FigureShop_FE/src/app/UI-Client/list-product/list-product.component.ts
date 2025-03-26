@@ -18,7 +18,6 @@ import { CartService } from '../../UI-Admin/Cart/cart.service';
     styleUrl: './list-product.component.css'
 })
 export class ListProductComponent implements OnInit, OnDestroy {
-
     figure?: PagedResult<BaseProductDto>;
     name?: string;
     type?: string;
@@ -38,8 +37,6 @@ export class ListProductComponent implements OnInit, OnDestroy {
         { id: 'price-5', label: '$800.000 - $1.500.000', min: 800000, max: 1500000 },
     ];
     selectedPrice: { id: string; min: number; max: number } | null = null;
-
-
 
     constructor(private service: FigureService, private cartService: CartService, private router: Router) { }
     ngOnDestroy(): void {
@@ -66,6 +63,7 @@ export class ListProductComponent implements OnInit, OnDestroy {
             , this.max, this.page, this.pageSize).pipe(takeUntil(this.destroy$)).subscribe({
                 next: response => {
                     this.figure = response;
+                    console.log('API response:', this.figure);
                 },
                 error: error => {
                     console.error('API error:', error);
@@ -139,15 +137,15 @@ export class ListProductComponent implements OnInit, OnDestroy {
         }
         return result;
     }
-    onAddToCart(productId: string, quantity: number): void{
+    onAddToCart(productId: string, quantity: number): void {
         const userId = "C1E15921-E8F6-4CBC-EACD-08DD67BB3796";
         this.cartService.addToCart(userId, productId, quantity).pipe(takeUntil(this.destroy$)).subscribe({
-          next: (response) => {
-            console.log('Product add successfully', response);
-          },
-          error: (err) => {
-            console.error('Error when adding product to cart.', err);
-          }
+            next: (response) => {
+                console.log('Product add successfully', response);
+            },
+            error: (err) => {
+                console.error('Error when adding product to cart.', err);
+            }
         });
     }
 

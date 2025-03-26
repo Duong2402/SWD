@@ -1,5 +1,6 @@
 ﻿using Domain.Common.BaseEntities;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -18,6 +19,7 @@ namespace Domain.Entities
         public int StockQuantity {  get; set; }
 
         // Nav props
+        [JsonIgnore]
         public Category Category { get; set; }
     }
 }
