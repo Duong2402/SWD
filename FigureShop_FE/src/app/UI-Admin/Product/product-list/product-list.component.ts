@@ -16,6 +16,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './product-list.component.css'
 })
 export class ProductListComponent implements OnInit, OnDestroy {
+
   products?: PagedResult<BaseProductDto>;
   isCollapsed = false;
   page?: number = 1;
@@ -46,6 +47,18 @@ export class ProductListComponent implements OnInit, OnDestroy {
         console.log(error);
       }
     })
+  }
+
+  deleteProduct(arg0: string) {
+    this.figure.deleteProduct(arg0).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data) => {
+        alert("Delete success");
+        this.getProducts();
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   }
   goToPreviousPage() {
     if (this.products?.pageNumber && this.products.pageNumber > 1) {

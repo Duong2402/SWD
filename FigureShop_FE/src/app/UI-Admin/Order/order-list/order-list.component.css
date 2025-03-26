@@ -14,4 +14,7 @@
   .text-red-500 {
     color: red;
   }
-  
+  .main-content {
+    margin-left: 250px;
+    transition: margin-left 0.3s ease-in-out;
+}

@@ -7,38 +7,41 @@ import { CartService } from '../../UI-Admin/Cart/cart.service';
 import { Subject } from 'rxjs/internal/Subject';
 import { takeUntil } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router'; 
+import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [NavigationComponent, FooterComponent,CommonModule,FormsModule],
+  imports: [NavigationComponent, FooterComponent, CommonModule, FormsModule],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
 })
-export class CartComponent implements OnInit, OnDestroy{
+export class CartComponent implements OnInit, OnDestroy {
   cart?: CartItem[] = [];
-  cartTotal: number = 0; 
-      private destroy$ = new Subject<void>();
-  
-  constructor(private cartService: CartService, private router: Router) {
+  cartTotal: number = 0;
+  private destroy$ = new Subject<void>();
+
+  constructor(private cartService: CartService, private router: Router,
+    private auth: AuthService
+  ) {
   }
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-}
+  }
   ngOnInit(): void {
     this.getAllCart();
   }
 
-  getAllCart(){
-    this.cartService.getCart().pipe(takeUntil(this.destroy$)).subscribe({
-      next: data =>{
+  getAllCart() {
+    this.cartService.getCart(this.auth.getUserId()!).pipe(takeUntil(this.destroy$)).subscribe({
+      next: data => {
         console.log(data);
-        this.cart = data;    
-        this.calculateCartTotal()    
+        this.cart = data;
+        this.calculateCartTotal()
       },
-      error: err =>{
+      error: err => {
         console.log(err);
       }
     })
@@ -52,33 +55,33 @@ export class CartComponent implements OnInit, OnDestroy{
     }
   }
 
-removeFromCart(cartId: string, productId: string): void {
+  removeFromCart(cartId: string, productId: string): void {
 
-  this.cartService.removeFromCart(cartId, productId).pipe(takeUntil(this.destroy$)).subscribe({
-    next: (response) => {
-      console.log('Product removed successfully', response);
-      this.cart = this.cart?.filter(cartItem => cartItem.productId !== productId);
-      this.calculateCartTotal(); 
-    },
-    error: (err) => {
-      console.error('Error removing product from cart', err);
-    }
-  });
-}
-
-updateQuantity(productId: string, quantity: number): void {
-  const userId = "C1E15921-E8F6-4CBC-EACD-08DD67BB3796";
-  const item = this.cart?.find(item => item.productId === productId);
-  if (item) {
-    item.quantity = quantity; 
+    this.cartService.removeFromCart(cartId, productId).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (response) => {
+        console.log('Product removed successfully', response);
+        this.cart = this.cart?.filter(cartItem => cartItem.productId !== productId);
+        this.calculateCartTotal();
+      },
+      error: (err) => {
+        console.error('Error removing product from cart', err);
+      }
+    });
   }
-  this.cartService.updateQuantity(userId, productId, quantity).pipe(takeUntil(this.destroy$)).subscribe({
-    next: (response) => {
-      console.log('The shopping cart has been updated.', response);
-    },
-    error: (error) => {
-      console.error('Error updating the shopping cart.', error);
+
+  updateQuantity(productId: string, quantity: number): void {
+    var userId = this.auth.getUserId();
+    const item = this.cart?.find(item => item.productId === productId);
+    if (item) {
+      item.quantity = quantity;
     }
-  });
-}
+    this.cartService.updateQuantity(userId!, productId, quantity).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (response) => {
+        console.log('The shopping cart has been updated.', response);
+      },
+      error: (error) => {
+        console.error('Error updating the shopping cart.', error);
+      }
+    });
+  }
 }

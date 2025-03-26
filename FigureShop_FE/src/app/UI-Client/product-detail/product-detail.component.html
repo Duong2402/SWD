@@ -8,7 +8,7 @@
             <div class="col-12">
                 <nav class="breadcrumb bg-light mb-30">
                     <a class="breadcrumb-item text-dark" href="#">Home</a>
-                    <a class="breadcrumb-item text-dark" href="#">Shop</a>
+                    <a class="breadcrumb-item text-dark" href="/shop">Shop</a>
                     <span class="breadcrumb-item active">Shop Detail</span>
                 </nav>
             </div>
@@ -117,8 +117,12 @@
                                 </button>
                             </div>
                         </div>
-                        <button class="btn btn-primary px-3 ml-2 me-2"><i class="fa fa-shopping-cart mr-1"></i> Add To
-                            Cart</button>
+                        <a href="cart">
+                            <button class="btn btn-primary px-3 ml-2 me-2"
+                                (click)="onAddToCart(cartItem?.productId || '', cartItem?.quantity || 1)"><i
+                                    class="fa fa-shopping-cart mr-1"></i> Add To Cart
+                            </button>
+                        </a>
                         <button (click)="gotoCheckout()" class="btn btn-primary px-3"><i
                                 class="fa fa-credit-card mr-1"></i> Check out</button>
                     </div>

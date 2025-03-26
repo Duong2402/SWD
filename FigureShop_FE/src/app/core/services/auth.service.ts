@@ -3,7 +3,7 @@ import { URL_Base } from '../../app.config';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { LoginRequest, LoginResponse } from '../Model/LoginRequest';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +17,20 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    const token = this.cookieService.get('token'); // Lấy token từ cookie
+    const token = this.cookieService.get('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.httpClient.post(`${this.api}/Logout`, {}, { headers });
+
+    return this.httpClient.post(`${this.api}/Logout`, {}, { headers }).pipe(
+      catchError((error) => {
+        if (error.status === 401) {
+          console.warn('Token đã hết hạn, xóa cookie...');
+          this.cookieService.delete('token'); // Xóa token nếu hết hạn
+        }
+        return throwError(() => error);
+      })
+    );
   }
+
 
   getUserId(): string | null {
     const token = this.cookieService.get('token');

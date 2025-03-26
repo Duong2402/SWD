@@ -11,13 +11,13 @@ export class CartService {
     private api = `${URL_Base}/Cart`;
     constructor(private http: HttpClient) { }
 
-    getCart(userId: string = "C1E15921-E8F6-4CBC-EACD-08DD67BB3796"): Observable<CartItem[]> {
+    getCart(userId: string): Observable<CartItem[]> {
         return this.http.get<CartItem[]>(`${this.api}/GetCart`, {
             params: { userId: userId },
         });
     }
-    
-    addToCart(userId: string ,productId: string, quantity: number): Observable<any>{
+
+    addToCart(userId: string, productId: string, quantity: number): Observable<any> {
         const cartDTO = {
             userId: userId,
             productId: productId,
@@ -29,10 +29,10 @@ export class CartService {
         return this.http.delete(`${this.api}/RemoveFromCart`, {
             params: { cartId, productId },
         });
-    }    
-    updateQuantity(userId: string, productId: string, quantity: number): Observable<any>{
+    }
+    updateQuantity(userId: string, productId: string, quantity: number): Observable<any> {
         const cartDTO = {
-            userId: userId ,
+            userId: userId,
             productId: productId,
             quantity: quantity
         };

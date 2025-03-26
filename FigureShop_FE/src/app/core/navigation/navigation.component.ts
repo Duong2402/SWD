@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FigureService } from '../../UI-Admin/Product/services/figure.service';
 import { BaseProductDto } from '../../UI-Admin/Product/Model/Figure';
 import { PagedResult } from '../Model/PageResult';
@@ -17,6 +17,7 @@ import { AuthService } from '../services/auth.service';
   styleUrl: './navigation.component.css'
 })
 export class NavigationComponent implements OnInit, OnDestroy {
+
   isLoggedIn: boolean = false;
   isNavbarVisible = true;
   lastScrollPosition = 0;
@@ -30,7 +31,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
 
   constructor(private figure: FigureService, private router: Router,
-    private cookie: CookieService, private authService: AuthService
+    private cookie: CookieService, private authService: AuthService, private route: ActivatedRoute
   ) {
 
   }
@@ -106,6 +107,10 @@ export class NavigationComponent implements OnInit, OnDestroy {
           console.log(err);
         }
       })
+  }
+
+  ShowAll() {
+    this.router.navigate(['/search'], { queryParams: { name: this.searchQuery } });
   }
 
 

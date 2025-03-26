@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CheckoutService } from '../services/checkout.service';
 import { CartService } from '../../UI-Admin/Cart/cart.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -27,7 +28,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(private service: FigureService, private router: ActivatedRoute,
-    private route: Router, private checkoutService: CheckoutService,
+    private route: Router, private checkoutService: CheckoutService, private auth: AuthService,
     private cartService: CartService) {
 
   }
@@ -82,8 +83,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   }
 
   onAddToCart(productId: string, quantity: number): void {
-    const userId = "8B86282E-B3DE-4692-2DD2-08DD679719EA";
-    this.cartService.addToCart(userId, productId, quantity).pipe(takeUntil(this.destroy$)).subscribe({
+    var userId = this.auth.getUserId();
+    this.cartService.addToCart(userId!, productId, quantity).pipe(takeUntil(this.destroy$)).subscribe({
       next: (response) => {
         console.log('Product add successfully', response);
       },
@@ -121,9 +122,9 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const quantity = 1;
+    const quantity = this.cartItem?.quantity;
     const price = this.product.price ?? 0; // Đảm bảo price có giá trị
-    const total = price * quantity;
+    const total = price * quantity!;
 
     this.checkoutService.setCheckoutData({
       id: this.product.id,

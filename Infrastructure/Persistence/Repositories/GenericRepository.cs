@@ -44,6 +44,10 @@ namespace Infrastructure.Persistence.Repositories
         public async Task UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
+            foreach (var collection in _context.Entry(entity).Collections)
+            {
+                collection.IsLoaded = true;
+            }
             await Task.CompletedTask;
         }
 
