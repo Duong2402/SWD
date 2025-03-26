@@ -19,7 +19,7 @@ namespace EShopWebAPI.Controllers
         private readonly AuthTokenOptions _authTokenOptions = authTokenOptions.Value;
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginDto dto)
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             if (IsLoggedIn())
             {
@@ -48,7 +48,8 @@ namespace EShopWebAPI.Controllers
 
             Response.Cookies.Append(_authTokenOptions.Name, token, cookieOptions);
 
-            return new JsonResult(Ok("Login approved"));
+            return Ok(new { token });
+            //return new JsonResult(Ok("Login approved"));
         }
 
         [HttpPost]
@@ -71,7 +72,7 @@ namespace EShopWebAPI.Controllers
         {
             Response.Cookies.Delete(_authTokenOptions.Name);
 
-            return new JsonResult(Ok("Logged out"));
+            return Ok(new { message = "Logged out successfully" });
         }
 
         private bool IsLoggedIn()
