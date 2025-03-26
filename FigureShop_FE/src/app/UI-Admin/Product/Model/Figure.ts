@@ -5,7 +5,7 @@ export interface BaseProductDto {
     name: string;
     imageUrl?: Media[];
     price: number;
-    category: CategoryList;
+    categoryDto: CategoryList;
 }
 
 export interface ProductDetail {
@@ -16,6 +16,7 @@ export interface ProductDetail {
     price: number;
     stockQuantity: number;
     category: CategoryList;
+    categoryId?: string;
 }
 
 export interface Media {
@@ -28,3 +29,14 @@ export interface CartItem {
     quantity: number;
     total?: number;
 }
+
+
+export interface ProductCreate {
+    name: string;
+    description?: string;
+    price: number;
+    stockQuantity: number;
+    categoryId: string;
+    media?: Media[];
+}
+

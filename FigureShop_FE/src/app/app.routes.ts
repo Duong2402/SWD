@@ -10,6 +10,8 @@ import { ListProductComponent } from './UI-Client/list-product/list-product.comp
 import { ProductListComponent } from './UI-Admin/Product/product-list/product-list.component';
 import { OrderListComponent } from './UI-Admin/Order/order-list/order-list.component';
 import { OrderDetailComponent } from './UI-Admin/Order/order-detail/order-detail.component';
+import { ProductCreateComponent } from './UI-Admin/Product/product-create/product-create.component';
+import { ProductDetailAdminComponent } from './UI-Admin/Product/product-detail/product-detail.component';
 
 export const routes: Routes = [
     {
@@ -43,6 +45,14 @@ export const routes: Routes = [
     {
         path: 'admin/products',
         component: ProductListComponent
+    },
+    {
+        path: 'admin/products/create',
+        component: ProductCreateComponent
+    },
+    {
+        path: 'admin/products/:id',
+        component: ProductDetailAdminComponent
     },
     {
         path: 'admin/orders',

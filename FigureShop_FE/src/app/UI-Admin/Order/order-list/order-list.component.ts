@@ -7,11 +7,12 @@ import { Router, RouterLink } from '@angular/router';
 import { takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SideBarComponent } from "../../core/side-bar/side-bar.component";
 
 @Component({
   selector: 'app-order-list',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterLink],
+  imports: [FormsModule, CommonModule, RouterLink, SideBarComponent],
   templateUrl: './order-list.component.html',
   styleUrl: './order-list.component.css'
 })

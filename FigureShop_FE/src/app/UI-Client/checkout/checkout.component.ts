@@ -8,6 +8,7 @@ import { Subject } from 'rxjs/internal/Subject';
 import { takeUntil } from 'rxjs';
 import { OrderService } from '../../UI-Admin/Order/order.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-checkout',
@@ -21,7 +22,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   totalAmount: number = 0;
   private destroy$ = new Subject<void>();
   constructor(private checkout: CheckoutService, private order: OrderService,
-    private router: Router
+    private router: Router, private auth: AuthService
   ) { }
 
 
@@ -52,7 +53,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
 
     const listOrder = {
-      userId: '1F7DF034-B7DA-48A1-2510-08DD6BC19478',
+      userId: this.auth.getUserId(),
       items: this.products.map(p => ({
         productId: p.id,
         quantity: p.quantity || 1
