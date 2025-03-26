@@ -12,6 +12,9 @@ import { OrderListComponent } from './UI-Admin/Order/order-list/order-list.compo
 import { OrderDetailComponent } from './UI-Admin/Order/order-detail/order-detail.component';
 import { ProductCreateComponent } from './UI-Admin/Product/product-create/product-create.component';
 import { ProductDetailAdminComponent } from './UI-Admin/Product/product-detail/product-detail.component';
+import { HistoryOrderComponent } from './UI-Client/history-order/history-order.component';
+import { ListCategoryComponent } from './UI-Admin/Category/list-category/list-category.component';
+import { ResultComponent } from './core/search-result/result/result.component';
 
 export const routes: Routes = [
     {
@@ -61,6 +64,18 @@ export const routes: Routes = [
     {
         path: 'order/:id',
         component: OrderDetailComponent
+    },
+    {
+        path: 'booking',
+        component: HistoryOrderComponent
+    },
+    {
+        path: 'admin/categories',
+        component: ListCategoryComponent
+    },
+    {
+        path: 'search/',
+        component: ResultComponent
     }
 ];
 

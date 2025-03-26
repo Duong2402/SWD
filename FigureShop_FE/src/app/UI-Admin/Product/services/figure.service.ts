@@ -46,4 +46,8 @@ export class FigureService {
     return this.http.put<string>(`${this.api}/Update/${productId}`, product);
   }
 
+  deleteProduct(productId: string): Observable<string> {
+    return this.http.delete<string>(`${this.api}/Delete/${productId}`);
+  }
+
 }

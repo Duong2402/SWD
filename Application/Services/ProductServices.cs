@@ -8,11 +8,8 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Linq.Expressions;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Application.Services
 {
@@ -63,7 +60,7 @@ namespace Application.Services
 
         public async Task<int> UpdateFigureAsync(Guid productId, ProductCreateDto dto)
         {
-            var figures = await _figureRepository.FilterAll(f => f.Id == productId);
+            var figures = await _figureRepository.FilterAll(f => f.Id == productId,"Media");
             var figure = figures.AsQueryable()
                 .Include(f => f.Media)
                 .FirstOrDefault()
@@ -101,11 +98,25 @@ namespace Application.Services
 
         public async Task<int> DeleteFigureAsync(Guid productId)
         {
-            _ = await _figureRepository.GetByIdAsync(productId) ?? throw new KeyNotFoundException("Could not find requested product.");
+            // Kiểm tra xem sản phẩm có tồn tại hay không
+            var product = await _figureRepository.GetDetailById(productId);
+            if (product == null)
+            {
+                throw new KeyNotFoundException("Could not find requested product.");
+            }
+
+            var medias = await _mediaRepo.FilterAll(m => m.ProductId == productId, "");
+
+            foreach (var media in medias)
+            {
+                await _mediaRepo.DeleteAsync(media.Id);
+            }
 
             await _figureRepository.DeleteAsync(productId);
+
             return await _unitOfWork.SaveChangesAsync();
         }
+
 
         public async Task<IPagedResult<BaseProductDto>> Filter(string? name,
             string? category, double? minPrice, double? maxPrice, int page, int sizePage = 10)

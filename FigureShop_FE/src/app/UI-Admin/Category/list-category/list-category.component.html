@@ -1,0 +1,50 @@
+<app-side-bar></app-side-bar>
+
+<div class="main-content">
+    <div class=" container mt-5">
+        <h2 class="text-center mb-4">Manage Categories</h2>
+
+        <!-- Form nhập dữ liệu -->
+        <div class="card p-3 mb-4 shadow-sm">
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <input [(ngModel)]="newCategory.name" placeholder="Category Name" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <input [(ngModel)]="newCategory.description" placeholder="Description" class="form-control" />
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button (click)="addCategory()" class="btn btn-primary">Add Category</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bảng danh sách danh mục -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <table class="table table-hover align-middle">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>#</th>
+                            <th>Category Name</th>
+                            <th>Description</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let category of categories; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ category.name }}</td>
+                            <td>{{ category.description }}</td>
+                            <td class="text-end">
+                                <button (click)="deleteCategory(category.id)" class="btn btn-danger btn-sm">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
