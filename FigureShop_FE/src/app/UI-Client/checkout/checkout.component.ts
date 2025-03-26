@@ -52,7 +52,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
 
     const listOrder = {
-      userId: '8B86282E-B3DE-4692-2DD2-08DD679719EA',
+      userId: '1F7DF034-B7DA-48A1-2510-08DD6BC19478',
       items: this.products.map(p => ({
         productId: p.id,
         quantity: p.quantity || 1

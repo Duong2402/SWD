@@ -6,6 +6,8 @@ import { FigureService } from '../../UI-Admin/Product/services/figure.service';
 import { BaseProductDto } from '../../UI-Admin/Product/Model/Figure';
 import { PagedResult } from '../Model/PageResult';
 import { Subject, takeUntil } from 'rxjs';
+import { CookieService } from 'ngx-cookie-service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-navigation',
@@ -14,8 +16,8 @@ import { Subject, takeUntil } from 'rxjs';
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.css'
 })
-export class NavigationComponent implements OnDestroy {
-
+export class NavigationComponent implements OnInit, OnDestroy {
+  isLoggedIn: boolean = false;
   isNavbarVisible = true;
   lastScrollPosition = 0;
   searchResults?: PagedResult<BaseProductDto>;
@@ -27,15 +29,38 @@ export class NavigationComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
 
 
-  constructor(private figure: FigureService, private router: Router) {
+  constructor(private figure: FigureService, private router: Router,
+    private cookie: CookieService, private authService: AuthService
+  ) {
 
   }
-
+  ngOnInit(): void {
+    this.checkLogin();
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+  checkLogin() {
+    const token = this.cookie.get("token");
+    this.isLoggedIn = !!token;
+  }
+
+  logout() {
+    console.log("hello");
+
+    this.authService.logout().subscribe({
+      next: () => {
+        this.isLoggedIn = false;
+        this.cookie.delete("token");
+        this.router.navigate(['/login']);
+      },
+      error: (err) => console.error('Logout failed', err)
+    });
+  }
+
 
   formatCurrency(price: number | undefined): string {
     if (price === undefined) {
