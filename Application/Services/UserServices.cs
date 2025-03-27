@@ -57,7 +57,6 @@ namespace Application.Services
             }
 
             var result = await _userManager.CheckPasswordAsync(user, dto.Password);
-
             return result;
         }
 
