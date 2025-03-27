@@ -1,0 +1,56 @@
+/* Sidebar chung */
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: #343a40;
+  color: white;
+  padding-top: 20px;
+  transition: width 0.3s ease-in-out;
+}
+
+/* Khi sidebar thu gọn */
+.sidebar-collapsed {
+  width: 70px;
+}
+
+/* Nút toggle sidebar */
+.toggle-btn {
+  position: absolute;
+  top: 10px;
+  right: -35px;
+  background-color: #343a40;
+  border: none;
+  color: white;
+  padding: 8px 10px;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+.toggle-btn:hover {
+  background-color: #495057;
+}
+
+/* Navigation items */
+.nav-link {
+  color: white;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  transition: background 0.3s;
+}
+.nav-link:hover {
+  background-color: #495057;
+}
+
+/* Icon */
+.nav-link i {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+/* Ẩn chữ khi sidebar thu gọn */
+.sidebar-collapsed .nav-text {
+  display: none;
+}

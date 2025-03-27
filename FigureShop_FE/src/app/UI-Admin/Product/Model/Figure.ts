@@ -5,20 +5,38 @@ export interface BaseProductDto {
     name: string;
     imageUrl?: Media[];
     price: number;
-    category: CategoryList;
+    categoryDto: CategoryList;
 }
 
 export interface ProductDetail {
     id: string;
     name: string;
-    imageUrl?: string;
-    vendors?: string;
-    type?: string;
+    imageUrl?: Media[];
+    description?: string;
     price: number;
+    stockQuantity: number;
     category: CategoryList;
+    categoryId?: string;
 }
 
 export interface Media {
     id: string;
     url: string;
 }
+
+export interface CartItem {
+    productId: string;
+    quantity: number;
+    total?: number;
+}
+
+
+export interface ProductCreate {
+    name: string;
+    description?: string;
+    price: number;
+    stockQuantity: number;
+    categoryId: string;
+    media?: Media[];
+}
+

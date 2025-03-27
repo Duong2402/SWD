@@ -21,16 +21,16 @@
                                 <label for="your_name" class="form-label">Your Name</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    <input type="text" class="form-control" id="your_name" placeholder="Your Name"
-                                        required>
+                                    <input [(ngModel)]="model.login" name="login" type="text" class="form-control"
+                                        id="your_name" placeholder="Your Name">
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label for="your_pass" class="form-label">Password</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    <input type="password" class="form-control" id="your_pass" placeholder="Password"
-                                        required>
+                                    <input [(ngModel)]="model.password" type="password" class="form-control"
+                                        id="your_pass" placeholder="Password" name="password">
                                 </div>
                             </div>
                             <div class="mb-3 form-check">
@@ -38,7 +38,7 @@
                                 <label class="form-check-label" for="remember-me">Remember me</label>
                             </div>
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-primary">Log in</button>
+                                <button (click)="login()" type="submit" class="btn btn-primary">Log in</button>
                             </div>
                         </form>
 

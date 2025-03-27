@@ -4,16 +4,18 @@ import { FooterComponent } from "../../core/footer/footer.component";
 import { PagedResult } from '../../core/Model/PageResult';
 import { BaseProductDto } from '../../UI-Admin/Product/Model/Figure';
 import { Subject } from 'rxjs/internal/Subject';
-import { FigureService } from '../../UI-Admin/Product/figure.service';
-import { Router } from '@angular/router';
+import { FigureService } from '../../UI-Admin/Product/services/figure.service';
+import { Router, RouterLink } from '@angular/router';
 import { takeUntil } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../UI-Admin/Cart/cart.service';
+import { CategoryList } from '../../UI-Admin/Category/Model/Category.Model';
+import { CategoryService } from '../../UI-Admin/Category/category.service';
 @Component({
     selector: 'app-checkout',
     standalone: true,
-    imports: [NavigationComponent, FooterComponent, FormsModule, CommonModule],
+    imports: [NavigationComponent, FooterComponent, FormsModule, CommonModule, RouterLink],
     templateUrl: './list-product.component.html',
     styleUrl: './list-product.component.css'
 })
@@ -28,6 +30,7 @@ export class ListProductComponent implements OnInit, OnDestroy {
     max?: number;
     page?: number = 1;
     pageSize: number = 6;
+    categoryList?: CategoryList[]
     private destroy$ = new Subject<void>();
 
     priceRanges = [
@@ -38,16 +41,16 @@ export class ListProductComponent implements OnInit, OnDestroy {
         { id: 'price-5', label: '$800.000 - $1.500.000', min: 800000, max: 1500000 },
     ];
     selectedPrice: { id: string; min: number; max: number } | null = null;
-
-
-
-    constructor(private service: FigureService, private cartService: CartService, private router: Router) { }
+    selectedCategory: string = '';
+    constructor(private service: FigureService, private cartService: CartService,
+        private categoryService: CategoryService, private router: Router) { }
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
     }
     ngOnInit(): void {
         this.filter();
+        this.loadCategories();
     }
 
     formatCurrency(price: number | undefined): string {
@@ -61,11 +64,24 @@ export class ListProductComponent implements OnInit, OnDestroy {
         return formatter.format(price);
     }
 
+    loadCategories() {
+        this.categoryService.getCategories().pipe(takeUntil(this.destroy$)).subscribe({
+            next: data => {
+                this.categoryList = data;
+                console.log(this.categoryList);
+            },
+            error: err => { // Sửa lại `err` thành `error`
+                console.error('Error loading categories:', err);
+            }
+        });
+    }
+
     filter(): void {
         this.service.filterProduct(this.name, this.type, this.vendor, this.category, this.min
             , this.max, this.page, this.pageSize).pipe(takeUntil(this.destroy$)).subscribe({
                 next: response => {
                     this.figure = response;
+                    console.log('API response:', this.figure);
                 },
                 error: error => {
                     console.error('API error:', error);
@@ -88,19 +104,53 @@ export class ListProductComponent implements OnInit, OnDestroy {
             this.filter();
         }
     }
+    filterByCategory(cate: CategoryList): void {
+        this.page = 1;
+
+        if (this.category === cate.name) {
+            this.category = undefined;
+        } else {
+            this.category = cate.name;
+        }
+        this.updateUrlParam();
+        this.filter();
+    }
+
+
+
+    isCheckedCategory(categoryName: string): boolean {
+        return this.category === categoryName;
+    }
+
 
     isCheckedPrice(id: string): boolean {
         return this.selectedPrice?.id === id;
     }
 
     updateUrlParam(): void {
-        this.router.navigate([], {
-            queryParams: this.selectedPrice !== null ?
-                { min: this.selectedPrice.min, max: this.selectedPrice.max } : { min: null, max: null },
+        const queryParams: any = {};
 
+        if (this.selectedPrice !== null) {
+            queryParams.min = this.selectedPrice.min;
+            queryParams.max = this.selectedPrice.max;
+        } else {
+            queryParams.min = null;
+            queryParams.max = null;
+        }
+
+        if (this.category) {
+            queryParams.category = this.category;
+        } else {
+            queryParams.category = null;
+        }
+
+        this.router.navigate([], {
+            queryParams: queryParams,
             queryParamsHandling: 'merge',
         });
     }
+
+
 
     //pagination
 
@@ -139,15 +189,15 @@ export class ListProductComponent implements OnInit, OnDestroy {
         }
         return result;
     }
-    onAddToCart(productId: string, quantity: number): void{
+    onAddToCart(productId: string, quantity: number): void {
         const userId = "C1E15921-E8F6-4CBC-EACD-08DD67BB3796";
         this.cartService.addToCart(userId, productId, quantity).pipe(takeUntil(this.destroy$)).subscribe({
-          next: (response) => {
-            console.log('Product add successfully', response);
-          },
-          error: (err) => {
-            console.error('Error when adding product to cart.', err);
-          }
+            next: (response) => {
+                console.log('Product add successfully', response);
+            },
+            error: (err) => {
+                console.error('Error when adding product to cart.', err);
+            }
         });
     }
 

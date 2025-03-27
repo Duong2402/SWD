@@ -1,0 +1,33 @@
+<!-- Sidebar -->
+<div class="sidebar" [ngClass]="{ 'sidebar-collapsed': isCollapsed }">
+    <button class="toggle-btn" (click)="toggleSidebar()">
+        <i class="bi" [ngClass]="isCollapsed ? 'bi-list' : 'bi-x'"></i>
+    </button>
+
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a href="/" class="nav-link">
+                <i class="bi bi-house-door"></i>
+                <span *ngIf="!isCollapsed" class="nav-text">Home</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/products" class="nav-link">
+                <i class="bi bi-box"></i>
+                <span *ngIf="!isCollapsed" class="nav-text">Products</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/orders" class="nav-link">
+                <i class="bi bi-cart"></i>
+                <span *ngIf="!isCollapsed" class="nav-text">Orders</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/categories" class="nav-link">
+                <i class="bi bi-cart"></i>
+                <span *ngIf="!isCollapsed" class="nav-text">Category</span>
+            </a>
+        </li>
+    </ul>
+</div>

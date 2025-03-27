@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using Application.Common.Pagination;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -43,6 +44,10 @@ namespace Infrastructure.Persistence.Repositories
         public async Task UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
+            foreach (var collection in _context.Entry(entity).Collections)
+            {
+                collection.IsLoaded = true;
+            }
             await Task.CompletedTask;
         }
 
@@ -69,10 +74,7 @@ namespace Infrastructure.Persistence.Repositories
 
             if (!string.IsNullOrWhiteSpace(includeProperties))
             {
-                foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    query = query.Include(includeProperty);
-                }
+                query = PageMethod.IncludeClass(query, includeProperties);
             }
 
             query = query.Where(predicate);
@@ -80,5 +82,48 @@ namespace Infrastructure.Persistence.Repositories
             return await query.ToListAsync();
         }
 
+        public async Task<T> GetDetailById(object id, string includeProperties = "")
+        {
+            var entity = await _dbSet.FindAsync(id);
+
+            if (entity == null) return null; 
+
+            IQueryable<T> query = _dbSet.Where(e => EF.Property<object>(e, "Id") == id);
+            if (!string.IsNullOrWhiteSpace(includeProperties))
+            {
+                query = PageMethod.IncludeClass(query, includeProperties);
+            }
+
+            return await query.FirstOrDefaultAsync();
+        }
+
+        // Example usage: _repository.GetPagedAsync(1, 10, x => x.Name.Contains("Memaybeo"), e => e.OrderByDescending(x => x.DateCreated)); 
+        public async Task<(IEnumerable<T> Items, int TotalCount)> GetPagedAsync(
+           int page = 1,
+           int size = 10,
+           Expression<Func<T, bool>>? filter = null,
+           Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null)
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+
+            var items = await query
+                .Skip((page - 1) * size)
+                .Take(size)
+                .ToListAsync();
+
+            return (items, totalCount);
+        }
     }
 }

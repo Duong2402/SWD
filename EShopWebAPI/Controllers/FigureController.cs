@@ -1,4 +1,5 @@
 ﻿using Application.DTO;
+using Application.DTO.ProductDTO;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -57,9 +58,26 @@ namespace EShopWebAPI.Controllers
             return new JsonResult(Ok(result));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ProductCreateDto dto)
+        [HttpGet("{productId}")]
+        public async Task<IActionResult> GetDetailById(Guid productId)
         {
+            var result = await _productServices.FigureDetailDTO(productId);
+
+            if (result == null)
+            {
+                return (NotFound());
+            }
+
+            return (Ok(result));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromForm] ProductCreateDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             try
             {
                 await _productServices.CreateFigureAsync(dto);
@@ -73,7 +91,7 @@ namespace EShopWebAPI.Controllers
         }
 
         [HttpPut("{postId}")]
-        public async Task<IActionResult> Update(Guid postId, [FromBody] ProductCreateDto dto)
+        public async Task<IActionResult> Update(Guid postId, [FromForm] ProductCreateDto dto)
         {
             try
             {
@@ -103,6 +121,29 @@ namespace EShopWebAPI.Controllers
             return new JsonResult(NoContent());
         }
 
-       
+        [HttpGet]
+        public async Task<IActionResult> CategoryList()
+        {
+            try
+            {
+                var categories = await _productServices.CategoryList();
+
+                if (categories == null || !categories.Any())
+                {
+                    return NotFound("No categories found.");
+                }
+
+                return Ok(categories);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in CategoryList API: {ex.Message}");
+
+                return StatusCode(500, "An error occurred while retrieving categories.");
+            }
+        }
+
+
+
     }
 }

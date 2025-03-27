@@ -1,0 +1,74 @@
+<div class="admin-container">
+    <div class="sidebar" [ngClass]="{ 'sidebar-collapsed': isCollapsed }">
+        <button class="toggle-btn" (click)="toggleSidebar()">
+            <i class="bi" [ngClass]="isCollapsed ? 'bi-list' : 'bi-x'"></i>
+        </button>
+
+        <app-side-bar></app-side-bar>
+    </div>
+
+    <div class="content" [ngClass]="{ 'content-expanded': isCollapsed }">
+        <h2 class="mb-4">Product List</h2>
+
+        <div class="action-buttons mb-3">
+            <a href="/admin/products/create" class="btn btn-primary">
+                <i class="bi bi-plus"></i> Add New Product
+            </a>
+        </div>
+
+        <table class="table table-hover shadow">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Image</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let product of products?.items; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>
+                        <img [src]="product.imageUrl?.[0]?.url ?? 'assets/default-image.jpg'" alt="Product Image"
+                            class="product-img">
+                    </td>
+                    <td>{{ product.categoryDto.name }}</td>
+                    <td>{{ product.price | number }}</td>
+                    <td>
+                        <a [routerLink]="['/admin/products/',product.id]" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <button (click)="deleteProduct(product.id)" class="btn btn-danger btn-sm ms-2">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="col-12">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" [class.disabled]="products?.pageNumber === 1"><button class="page-link"
+                            (click)="goToPage(1)">First</button></li>
+                    <li class="page-item" [class.disabled]="products?.pageNumber === 1"><button class="page-link"
+                            (click)="goToPreviousPage()">Previous</button></li>
+                    <li class="page-item active" [class.active]="page=== products?.pageNumber"
+                        *ngFor="let page of numberPage()">
+                        <button class="page-link" (click)="goToPage(page)">{{page}}</button>
+                    </li>
+                    <li class="page-item" [class.disabled]="products?.pageNumber === products?.totalPages">
+                        <button class="page-link" (click)="goToNext()">Next</button>
+                    </li>
+                    <li class="page-item" [class.disabled]="products?.pageNumber === products?.totalPages">
+                        <button class="page-link" (click)="goToPage(products?.totalPages)">Last</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+
+</div>
